@@ -12,28 +12,28 @@ from .modules.sensor_type import get_sensor_type
 from .modules.create_object import create
 
 # command example
-# python manage.py import_data-v4 --url http://archive.sensor.community
+# python manage.py import_data --url http://archive.sensor.community --date 2023-12-25
 
 class Command(BaseCommand):
     help = 'Load data csv file into the database'
 
     def add_arguments(self, parser):
         parser.add_argument('--url', type=str)
+        parser.add_argument('--date', type=str)
 
     def handle(self, *args, **kwargs):
 
         website = kwargs['url']
-        yesterday = date.today() - timedelta(days = 2)
-        str_date = str(yesterday)
-        base_url = website + "/" + str_date
+        date = kwargs['date']
+        base_url = website + "/" + date
         page = requests.get(base_url)
         soup = BeautifulSoup(page.content, "html.parser")
 
         start = time.time()
         object_count = 0
         for i in soup.find_all("a", href = True):
-            if str_date in i["href"]:
-                sensor_type = get_sensor_type(i['href'], str_date)
+            if date in i["href"]:
+                sensor_type = get_sensor_type(i['href'], date)
 
                 if sensor_type != None:
                     url = base_url + "/" + i["href"]
