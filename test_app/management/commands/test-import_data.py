@@ -30,13 +30,14 @@ class Command(BaseCommand):
         soup = BeautifulSoup(page.content, "html.parser")
 
         start = time.time()
-        object_count = 0
+        current_sensor_type = None
         for i in soup.find_all("a", href = True):
             if date in i["href"]:
                 sensor_type = get_sensor_type(i['href'], date)
                 sensor_type = sensor_type.replace("-", "")
 
-                if sensor_type != None:
+                if sensor_type != current_sensor_type:
+                    object_count = 0
                     url = base_url + "/" + i["href"]
 
                     response = urllib.request.urlopen(url)
@@ -55,11 +56,17 @@ class Command(BaseCommand):
                                 if row[i] == "" or row[i] == "unavailable":
                                     row[i] = "nan"
 
-                            create(sensor_type, row)
+                            if object_count == 0:
+                                create(sensor_type, row)
 
-                            object_count += 1
-                            print(str(object_count) + ". object created.")
-        print("total:", object_count, "objects")
+                                object_count += 1
+                                print(sensor_type, "successfully created")
+                                current_sensor_type = sensor_type
+
+                            else:
+                                break
+
+        #print("total:", object_count, "objects")
 
         end = time.time()
         total_time = end - start

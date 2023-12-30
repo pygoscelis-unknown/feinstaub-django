@@ -20,11 +20,13 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument('--url', type=str)
         parser.add_argument('--date', type=str)
+        parser.add_argument('--type', type=str)
 
     def handle(self, *args, **kwargs):
 
         website = kwargs['url']
         date = kwargs['date']
+        inserted_sensor_type = kwargs['type']
         base_url = website + "/" + date
         page = requests.get(base_url)
         soup = BeautifulSoup(page.content, "html.parser")
@@ -36,7 +38,7 @@ class Command(BaseCommand):
                 sensor_type = get_sensor_type(i['href'], date)
                 sensor_type = sensor_type.replace("-", "")
 
-                if sensor_type != None:
+                if sensor_type != None and inserted_sensor_type == sensor_type:
                     url = base_url + "/" + i["href"]
 
                     response = urllib.request.urlopen(url)
