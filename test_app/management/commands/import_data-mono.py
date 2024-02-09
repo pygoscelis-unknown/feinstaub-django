@@ -40,6 +40,7 @@ class Command(BaseCommand):
 
                 if sensor_type != None and inserted_sensor_type == sensor_type:
                     url = base_url + "/" + i["href"]
+                    print("current url:", url)
 
                     response = urllib.request.urlopen(url)
                     lines = [line.decode("utf-8") for line in response.readlines()]
