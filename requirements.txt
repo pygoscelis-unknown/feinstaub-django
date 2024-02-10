@@ -5,7 +5,9 @@ dj-database-url==2.1.0
 Django==5.0.2
 django-filter==23.5
 djangorestframework==3.14.0
+gunicorn==21.2.0
 Markdown==3.5.2
+packaging==23.2
 psycopg==3.1.18
 pytz==2024.1
 soupsieve==2.5
