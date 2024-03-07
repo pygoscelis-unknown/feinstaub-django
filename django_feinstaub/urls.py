@@ -21,6 +21,9 @@ from django.urls import path, include
 from django.contrib.auth.models import User
 from rest_framework import routers, serializers, viewsets
 
+from test_app.views import TestView, return_raw_json, return_raw_json_sensor
+
+
 # Serializers define the API representation.
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -41,5 +44,8 @@ router.register(r'users', UserViewSet)
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include(router.urls)),
-    path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    #path('test/', UserViewSet.as_view({'get': 'list'})),
+    #path('test/', return_raw_json),
+    path('test/', return_raw_json_sensor),
 ]

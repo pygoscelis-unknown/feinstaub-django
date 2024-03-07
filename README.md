@@ -17,28 +17,45 @@
 ## Getting Started
 
 ### Prerequisites
-
+- Python 3
+```bash
 python --version
 django-admin --version
+```
 
 ### Installation
 
+__Clone repository__
 ```bash
 git clone https://github.com/username/project.git
+```
 
-cd project
+```bash
+cd django-feinstaub
+```
 
-# install dependencies
+__Install dependencies__
+```bash
 pip install -r requirements.txt
+```
 
-# apply migrations
-python manage.py migrate
+__Add environment variables__
+- copy .env.example to .env
+- add secrets
 
-# start the development server
+
+## Usage
+### Start the development server
+```bash
 python manage.py runserver
 ```
 
-## Usage
+### Apply migrations
+```bash
+python manage.py migrate
+```
+
+
 
 1. get data header from csv files
 ```
@@ -62,6 +79,14 @@ This currently fetchs data of yesterday.
 !IS STILL BUGGY! has issues with some timestamps etc.
 
 ## Configuration
+
+## Deployment
+This app is deployed to render.com. As a build command render uses the `build.sh` script to install dependencies and run migrations.
+
+Render provides an internal and external database connection string. We use a configuration based on the external connection string.
+
+## Further information
+This project uses DRF (Django Rest Framework) for the REST API. 
 
 ## Contributing
 
