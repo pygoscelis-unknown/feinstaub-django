@@ -1,14 +1,7 @@
 from django.db import models
 from django.conf import settings
 import os
-
-class BaseModel(models.Model):
-    objects = models.Manager()
-    class Meta:
-        abstract = True
-
-
-class bme280(BaseModel):
+class bme280(models.Model):
 #
     sensor_id = models.IntegerField(null=True)
 #
