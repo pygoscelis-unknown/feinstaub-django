@@ -30,7 +30,7 @@ DEBUG = True
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
-    "feinstaub-django.onrender.com"
+    "django-feinstaub.onrender.com"
 ]
 
 
