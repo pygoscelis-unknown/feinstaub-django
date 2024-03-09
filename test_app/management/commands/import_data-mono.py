@@ -56,7 +56,7 @@ class Command(BaseCommand):
                             # convert empty string to NaN to avoid type error
                             for i in range(len(row)):
                                 if row[i] == "" or row[i] == "unavailable":
-                                    row[i] = "nan"
+                                    row[i] = "NaN"
 
                             create(sensor_type, row)
 

@@ -83,7 +83,10 @@ REST_FRAMEWORK = {
     # or allow read-only access for unauthenticated users.
     'DEFAULT_PERMISSION_CLASSES': [
         'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    ]
+    ],
+    # "NaN" is still invalid value in json, visit the following link for the details
+    # https://www.django-rest-framework.org/api-guide/settings/#strict_json
+    'STRICT_JSON': False,
 }
 
 
