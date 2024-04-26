@@ -16,9 +16,11 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument('--path', type=str)
+        parser.add_argument('--app', type=str)
 
     def handle(self, *args, **kwargs):
         path = kwargs['path']
+        apps_name = kwargs['app']
 
         with open(path) as f:
             data = json.load(f)
@@ -51,7 +53,7 @@ class Command(BaseCommand):
                                 or value == "location":
                             pyf.write(textwrap.dedent("""\
                             #
-                                {} = models.IntegerField(null=True)
+                                {} = models.IntegerField(null=True, blank=True)
                             """).format(value))
                         elif value == "sensor_type":
                             pyf.write(textwrap.dedent("""\
@@ -61,12 +63,12 @@ class Command(BaseCommand):
                         elif value == "timestamp":
                             pyf.write(textwrap.dedent("""\
                             #
-                                {} = models.DateTimeField(null=True)
+                                {} = models.DateTimeField(null=True, blank=True)
                             """).format(value))
                         else:
                             pyf.write(textwrap.dedent("""\
                             #
-                                {} = models.FloatField(null=True)
+                                {} = models.FloatField(null=True, blank=True)
                             """).format(value))
 
             # append content to admin.py
@@ -93,8 +95,8 @@ class Command(BaseCommand):
 
                 with open("create_object.py", "a") as pyf:
                     pyf.write(textwrap.dedent("""\
-                        from test_app.models import {}
-                    """.format(key)))
+                        from {}.models import {}
+                    """.format(apps_name, key)))
 
             with open("create_object.py", "a") as pyf:
                 pyf.write(textwrap.dedent("""\
@@ -113,33 +115,16 @@ class Command(BaseCommand):
 
                     index = 0
                     for value in values:
-                        if value == "sensor_id"\
-                                or value == "location":
-                            pyf.write(textwrap.dedent("""\
-                            #
-                                    {}=int(row[{}]),
-                            """).format(value, index))
-                        elif value == "sensor_type":
-                            pyf.write(textwrap.dedent("""\
-                            #
-                                    {}=row[{}],
-                            """).format(value, index))
-                        elif value == "timestamp":
-                            pyf.write(textwrap.dedent("""\
-                            #
-                                    {}=row[{}],
-                            """).format(value, index))
-                        else:
-                            pyf.write(textwrap.dedent("""\
-                            #
-                                    {}=float(row[{}]),
-                            """).format(value, index))
+                        pyf.write(textwrap.dedent("""\
+                        #
+                                {}=row[{}],
+                        """).format(value, index))
                         index += 1
 
                     pyf.write(textwrap.dedent("""\
                     #
                             )
-                    """.format(key, key)))
+                    """))
 
             with open("create_object.py", "a") as pyf:
                 pyf.write(textwrap.dedent("""\

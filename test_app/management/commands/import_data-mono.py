@@ -1,18 +1,16 @@
 from django.core.management import BaseCommand
-from test_app.models import sps30
 import csv
 
 from bs4 import BeautifulSoup
 import requests
 import urllib.request
-from datetime import date
-from datetime import timedelta
+import datetime
 import time
 from .modules.sensor_type import get_sensor_type
 from .modules.create_object import create
 
 # command example
-# python manage.py import_data --url http://archive.sensor.community --date 2023-12-25
+# python manage.py import_data-mono --url http://archive.sensor.community --date 2023-12-25 --type bme280
 
 class Command(BaseCommand):
     help = 'Load data csv file into the database'
@@ -47,16 +45,39 @@ class Command(BaseCommand):
                     reader = csv.reader(lines, delimiter=";")
 
                     index = 0
+                    header = []
+
                     for row in reader:
                         # ignore first header row
                         if index == 0:
+                            for i in range(len(row)):
+                                header.append(row[i])
                             index += 1
 
                         else:
-                            # convert empty string to NaN to avoid type error
+                            # ignore/convert illigal values
                             for i in range(len(row)):
-                                if row[i] == "" or row[i] == "unavailable":
-                                    row[i] = "NaN"
+                                if header[i] != "sensor_type":
+                                    if header[i] == "sensor_id" or header[i] == "location":
+                                        #int
+                                        try:
+                                            row[i] = int(row[i])
+                                        except ValueError:
+                                            row[i] = None
+
+                                    elif header[i] == "timestamp":
+                                        #timestamp
+                                        try:
+                                            row[i] = datetime.datetime.fromisoformat(row[i])
+                                        except ValueError:
+                                            row[i] = None
+
+                                    else:
+                                        #float
+                                        try:
+                                            row[i] = float(row[i])
+                                        except ValueError:
+                                            row[i] = None
 
                             create(sensor_type, row)
 
