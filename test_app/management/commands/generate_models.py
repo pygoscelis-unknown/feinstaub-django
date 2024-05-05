@@ -36,6 +36,15 @@ class Command(BaseCommand):
                     from django.contrib import admin
                 """))
 
+            with open("urls.py", "w") as pyf:
+                pyf.write(textwrap.dedent("""\
+                    from django.contrib import admin
+                    from django.urls import path
+                    from django.urls import path, include
+                    from django.contrib.auth.models import User
+                    from rest_framework import routers, serializers, viewsets
+                """))
+
             with open("create_object.py", "w") as pyf:
                 pyf.write("")
 
@@ -88,6 +97,57 @@ class Command(BaseCommand):
                     pyf.write(textwrap.dedent("""\
                         admin.site.register({})
                     """.format(key)))
+
+            # append content to urls.py
+            for key, value in data.items():
+                key = key.replace("-", "")
+
+                with open("urls.py", "a") as pyf:
+                    pyf.write(textwrap.dedent("""\
+                        from {}.models import {}
+                    """.format(apps_name, key)))
+
+            with open("urls.py", "a") as pyf:
+                pyf.write(textwrap.dedent("""\
+                    # Serializers define the API representation.
+                    class UserSerializer(serializers.HyperlinkedModelSerializer):
+                        class Meta:
+                            model = User
+                            fields = ['url', 'username', 'email', 'is_staff']
+                    # ViewSets define the view behavior.
+                    class UserViewSet(viewsets.ModelViewSet):
+                        queryset = User.objects.all()
+                        serializer_class = UserSerializer
+                    # Routers provide an easy way of automatically determining the URL conf.
+                    router = routers.DefaultRouter()
+                    router.register(r'users', UserViewSet)
+                """))
+
+            for key, value in data.items():
+                key = key.replace("-", "")
+
+                with open("urls.py", "a") as pyf:
+                    pyf.write(textwrap.dedent("""\
+                        class {}Serializer(serializers.HyperlinkedModelSerializer):
+                            class Meta:
+                                model = {}
+                                fields = "__all__"
+                        class {}ViewSet(viewsets.ModelViewSet):
+                            queryset = {}.objects.all()
+                            serializer_class = {}Serializer
+                        router.register(r'{}', {}ViewSet)
+                    """.format(key.capitalize(), key, key.capitalize(), key, key.capitalize(), key, key.capitalize())))
+
+            with open("urls.py", "a") as pyf:
+                pyf.write(textwrap.dedent("""\
+                    # Wire up our API using automatic URL routing.
+                    # Additionally, we include login URLs for the browsable API.
+                    urlpatterns = [
+                        path('admin/', admin.site.urls),
+                        path('', include(router.urls)),
+                        path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+                    ]
+                """))
 
             # append content to create_object.py
             for key, values in data.items():
