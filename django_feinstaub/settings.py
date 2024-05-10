@@ -30,7 +30,13 @@ DEBUG = True
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
+    "t530",
     "django-feinstaub.onrender.com"
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost',
+    'http://t530:8001'
 ]
 
 
@@ -90,16 +96,20 @@ REST_FRAMEWORK = {
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
 
-load_dotenv()
+#load_dotenv()
 
 DATABASES = {
+    #'default': {
+    #    'ENGINE': os.environ.get("DB_ENGINE"),
+    #    'NAME': os.environ.get("DB_NAME"),
+    #    'USER': os.environ.get("DB_USER"),
+    #    'PASSWORD': os.environ.get("DB_PASSWORD"),
+    #    'HOST': os.environ.get("DB_HOST"),
+    #    'PORT': os.environ.get("DB_PORT"),
+    #}
     'default': {
-        'ENGINE': os.environ.get("DB_ENGINE"),
-        'NAME': os.environ.get("DB_NAME"),
-        'USER': os.environ.get("DB_USER"),
-        'PASSWORD': os.environ.get("DB_PASSWORD"),
-        'HOST': os.environ.get("DB_HOST"),
-        'PORT': os.environ.get("DB_PORT"),
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
 }
 
