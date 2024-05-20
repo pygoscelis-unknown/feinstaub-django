@@ -8,4 +8,5 @@ db.sqlite3
 node_modules/
 note.md
 .env
+.env.old
 .idea
