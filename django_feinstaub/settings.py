@@ -30,7 +30,13 @@ DEBUG = True
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
+    "t530",
     "django-feinstaub.onrender.com"
+]
+
+CSRF_TRUSTED_ORIGINS = [
+    'http://localhost',
+    'http://t530:8001'
 ]
 
 
@@ -101,6 +107,15 @@ DATABASES = {
         'HOST': os.environ.get("DB_HOST"),
         'PORT': os.environ.get("DB_PORT"),
     }
+    #'default': {
+    #    'ENGINE': 'django.db.backends.sqlite3',
+    #    'NAME': BASE_DIR / 'db.sqlite3',
+    #    "OPTIONS": {
+    #        # ...
+    #        "timeout": 20,
+    #        # ...
+    #    },
+    #}
 }
 
 # Password validation
