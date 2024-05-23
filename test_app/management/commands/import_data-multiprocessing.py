@@ -1,5 +1,6 @@
 from django.core.management import BaseCommand
 import csv
+import os
 
 from bs4 import BeautifulSoup
 import urllib.request
@@ -47,6 +48,15 @@ class Command(BaseCommand):
             header = rows.pop(0)
 
             create_objects(sensor_type, header, rows)
+
+        # delete csv and zip
+        for f in [file_name + ".zip", file_name + ".csv"]:
+            if os.path.exists(f):
+                print("Deleting file {} ...".format(f))
+                os.remove(f)
+                print("File {} deleted.".format(f))
+            else:
+              print("Failed to delete file {}.".format(f))
 
         end = time.time()
         total_time = end - start

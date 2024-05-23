@@ -1,5 +1,6 @@
 from django.core.management import BaseCommand
 import csv
+import os
 
 from bs4 import BeautifulSoup
 import urllib.request
@@ -83,6 +84,14 @@ class Command(BaseCommand):
                     object_count += 1
                     print(str(object_count) + ". object created.", end="\r")
 
+        # delete csv and zip
+        for f in [file_name + ".zip", file_name + ".csv"]:
+            if os.path.exists(f):
+                print("Deleting file {} ...".format(f))
+                os.remove(f)
+                print("File {} deleted.".format(f))
+            else:
+              print("Failed to delete file {}.".format(f))
         print("total:", object_count, "objects", end="\r")
 
         end = time.time()

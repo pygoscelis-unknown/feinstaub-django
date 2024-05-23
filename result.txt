@@ -1,0 +1,13 @@
+synchronous - import data all
+total: 2303669 objects
+time: 8936.8487
+
+synchronous - import data zip 2023-02 pms1003
+time 192.5255
+multiprocessing - import data zip 2023-02 pms1003
+time 53.4975
+
+synchronous - import data zip 2024-03 pms1003
+time 290.4066
+multiprocessing - import data zip 2024-03 pms1003
+time 82.3687
