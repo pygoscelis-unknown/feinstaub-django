@@ -13,7 +13,7 @@ from .modules.multiprocessing import main as create_objects
 import multiprocessing
 
 # command example
-# python manage.py import_data-zip --url http://archive.sensor.community --year 2024 --month 03 --type bme280
+# python manage.py import_data-zip-multiprocessing --url http://archive.sensor.community --year 2024 --month 03 --type bme280
 
 class Command(BaseCommand):
     help = 'Load data from csv file into the database'
