@@ -61,14 +61,13 @@ class Command(BaseCommand):
                     create_objects(t, header, rows)
 
                 # delete csv and zip
-                # TODO
-                #for f in [file_name + ".zip", file_name + ".csv"]:
-                #    if os.path.exists(f):
-                #        print("Deleting file {} ...".format(f))
-                #        os.remove(f)
-                #        print("File {} deleted.".format(f))
-                #    else:
-                #      print("Failed to delete file {}.".format(f))
+                for f in [file_name + ".zip", file_name + ".csv"]:
+                    if os.path.exists(f):
+                        print("Deleting file {} ...".format(f))
+                        os.remove(f)
+                        print("File {} deleted.".format(f))
+                    else:
+                      print("Failed to delete file {}.".format(f))
 
             except Exception as e:
                 print(f'Error: {url}: {str(e)}')
@@ -76,37 +75,3 @@ class Command(BaseCommand):
         end = time.time()
         total_time = end - start
         print("time:", total_time)
-
-
-        #sensor_type = kwargs['type']
-        # get sensor types from json inside root
-        #url = base_url + "/csv_per_month/" + date + "/" + date + '_' + sensor_type + '.zip'
-        #file_name = date + "_" + sensor_type
-
-        #start = time.time()
-
-        #print("Downloading zip ...", end="\r")
-        #urllib.request.urlretrieve(url, file_name + ".zip")
-        #with zipfile.ZipFile(file_name + ".zip", 'r') as zip_ref:
-        #    print("Extracting zip ...")
-        #    zip_ref.extractall("./")
-
-        #with open(file_name + '.csv', newline='') as csvfile:
-        #    reader = csv.reader(csvfile, delimiter=';')
-        #    rows = [x for x in reader]
-        #    header = rows.pop(0)
-
-        #    create_objects(sensor_type, header, rows)
-
-        ## delete csv and zip
-        #for f in [file_name + ".zip", file_name + ".csv"]:
-        #    if os.path.exists(f):
-        #        print("Deleting file {} ...".format(f))
-        #        os.remove(f)
-        #        print("File {} deleted.".format(f))
-        #    else:
-        #      print("Failed to delete file {}.".format(f))
-
-        #end = time.time()
-        #total_time = end - start
-        #print("time:", total_time)
