@@ -10,6 +10,12 @@ services:
       - data:/var/lib/postgresql/data
     logging:
       driver: none
+        
+  adminer:
+    image: adminer:latest
+    restart: unless-stopped
+    ports:
+      - 8080:8080
  
 volumes:
   data:
