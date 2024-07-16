@@ -12,7 +12,7 @@ import json
 import textwrap
 
 class Command(BaseCommand):
-    help = "generate models.py from json"
+    help = "generate base files from json"
 
     def add_arguments(self, parser):
         parser.add_argument('--path', type=str)
@@ -25,21 +25,36 @@ class Command(BaseCommand):
         with open(path) as f:
             data = json.load(f)
 
-            with open("models.py", "w") as pyf:
+
+            # --- INIT FILES --- #
+            with open("app_models.py", "w") as pyf:
                 pyf.write(textwrap.dedent("""\
                     from django.db import models
-                    from django.conf import settings
-                    import os
                 """))
-            with open("admin.py", "w") as pyf:
+
+            with open("app_admin.py", "w") as pyf:
                 pyf.write(textwrap.dedent("""\
                     from django.contrib import admin
                 """))
 
-            with open("urls.py", "w") as pyf:
+            with open("app_serializers.py", "w") as pyf:
+                pyf.write(textwrap.dedent("""\
+                    from rest_framework import serializers
+                """))
+
+            with open("app_views.py", "w") as pyf:
+                pyf.write(textwrap.dedent("""\
+                    from rest_framework import viewsets
+                """))
+
+            with open("app_urls.py", "w") as pyf:
+                pyf.write(textwrap.dedent("""\
+                    from rest_framework import routers
+                """))
+
+            with open("project_urls.py", "w") as pyf:
                 pyf.write(textwrap.dedent("""\
                     from django.contrib import admin
-                    from django.urls import path
                     from django.urls import path, include
                     from django.contrib.auth.models import User
                     from rest_framework import routers, serializers, viewsets
@@ -48,12 +63,13 @@ class Command(BaseCommand):
             with open("create_object.py", "w") as pyf:
                 pyf.write("")
 
-            # append content to models.py
+
+            # --- APP_MODELS.PY --- #
             for key, values in data.items():
                 key = key.replace("-", "")
 
-                with open("models.py", "a") as pyf:
-                    pyf.write(textwrap.dedent("""\
+                with open("app_models.py", "a") as pyf:
+                    pyf.write(textwrap.dedent("""\n
                         class {}(models.Model):
                     """.format(key)))
 
@@ -80,92 +96,93 @@ class Command(BaseCommand):
                                 {} = models.FloatField(null=True, blank=True)
                             """).format(value))
 
-            # append content to admin.py
+            with open("app_models.py", "r") as pyf:
+                lines = pyf.readlines()
+
+            with open("app_models.py", "w") as pyf:
+                for line in lines:
+                    if line.strip("\n") != "#":
+                        pyf.write(line)
+
+
+            # --- ITERATE OVER OBJECTS --- #
+            index = 0
             for key, values in data.items():
                 key = key.replace("-", "")
 
-                with open("admin.py", "a") as pyf:
-                    pyf.write(textwrap.dedent("""\
-                        from .models import {}
-                    """.format(key)))
+
+                # --- IMPORT MODELS --- #
+                with open("app_admin.py", "a") as pyf:
+                    if index == 0:
+                        pyf.write("from .models import {}".format(key))
+                    else:
+                        pyf.write(", {}".format(key))
+
+                with open("app_serializers.py", "a") as pyf:
+                    if index == 0:
+                        pyf.write("from .models import {}".format(key))
+                    else:
+                        pyf.write(", {}".format(key))
+
+                with open("app_views.py", "a") as pyf:
+                    if index == 0:
+                        pyf.write("from .models import {}".format(key))
+                    else:
+                        pyf.write(", {}".format(key))
+
+                with open("create_object.py", "a") as pyf:
+                    if index == 0:
+                        pyf.write("from {}.models import {}".format(apps_name, key))
+                        index += 1
+                    else:
+                        pyf.write(", {}".format(key))
 
 
-            for key, values in data.items():
-                key = key.replace("-", "")
-
-                with open("admin.py", "a") as pyf:
-                    pyf.write(textwrap.dedent("""\
-                        admin.site.register({})
-                    """.format(key)))
-
-            # append content to urls.py
-            for key, value in data.items():
-                key = key.replace("-", "")
-
-                with open("urls.py", "a") as pyf:
-                    pyf.write(textwrap.dedent("""\
-                        from {}.models import {}
-                    """.format(apps_name, key)))
-
-            with open("urls.py", "a") as pyf:
-                pyf.write(textwrap.dedent("""\
-                    # Serializers define the API representation.
-                    class UserSerializer(serializers.HyperlinkedModelSerializer):
-                        class Meta:
-                            model = User
-                            fields = ['url', 'username', 'email', 'is_staff']
-                    # ViewSets define the view behavior.
-                    class UserViewSet(viewsets.ModelViewSet):
-                        queryset = User.objects.all()
-                        serializer_class = UserSerializer
-                    # Routers provide an easy way of automatically determining the URL conf.
-                    router = routers.DefaultRouter()
-                    router.register(r'users', UserViewSet)
+            # --- CREATE_OBJECT.PY --- #
+            with open("create_object.py", "a") as pyf:
+                pyf.write(textwrap.dedent("""\n
+                    def create(sensor_type, row):
                 """))
 
-            for key, value in data.items():
+
+            # --- ITERATE OVER OBJECTS --- #
+            index = 0
+            for key, values in data.items():
                 key = key.replace("-", "")
 
-                with open("urls.py", "a") as pyf:
-                    pyf.write(textwrap.dedent("""\
+
+                # --- APP_ADMIN.PY --- #
+                with open("app_admin.py", "a") as pyf:
+                    pyf.write("\nadmin.site.register({})".format(key))
+
+
+                # --- APP_VIEWS.PY --- #
+                with open("app_views.py", "a") as pyf:
+                    if index == 0:
+                        pyf.write("\nfrom .serializers import {}Serializer".format(key.capitalize()))
+                    else:
+                        pyf.write(", {}Serializer".format(key.capitalize()))
+
+
+                # --- APP_SERIALIZERS.PY --- #
+                with open("app_serializers.py", "a") as pyf:
+                    pyf.write(textwrap.dedent("""\n
                         class {}Serializer(serializers.HyperlinkedModelSerializer):
                             class Meta:
                                 model = {}
                                 fields = "__all__"
-                        class {}ViewSet(viewsets.ModelViewSet):
-                            queryset = {}.objects.all()
-                            serializer_class = {}Serializer
-                        router.register(r'{}', {}ViewSet)
-                    """.format(key.capitalize(), key, key.capitalize(), key, key.capitalize(), key, key.capitalize())))
+                    """.format(key.capitalize(), key)))
 
-            with open("urls.py", "a") as pyf:
-                pyf.write(textwrap.dedent("""\
-                    # Wire up our API using automatic URL routing.
-                    # Additionally, we include login URLs for the browsable API.
-                    urlpatterns = [
-                        path('admin/', admin.site.urls),
-                        path('', include(router.urls)),
-                        path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
-                    ]
-                """))
 
-            # append content to create_object.py
-            for key, values in data.items():
-                key = key.replace("-", "")
+                # --- APP_URLS.PY --- #
+                with open("app_urls.py", "a") as pyf:
+                    if index == 0:
+                        pyf.write("from .views import {}ViewSet".format(key.capitalize()))
+                    else:
+                        pyf.write(", {}ViewSet".format(key.capitalize()))
 
-                with open("create_object.py", "a") as pyf:
-                    pyf.write(textwrap.dedent("""\
-                        from {}.models import {}
-                    """.format(apps_name, key)))
 
-            with open("create_object.py", "a") as pyf:
-                pyf.write(textwrap.dedent("""\
-                    def create(sensor_type, row):
-                """.format(key)))
-
-            for key, values in data.items():
-                key = key.replace("-", "")
-
+                # --- CREATE_OBJECT.PY --- #
                 with open("create_object.py", "a") as pyf:
                     pyf.write(textwrap.dedent("""\
                     #
@@ -186,8 +203,77 @@ class Command(BaseCommand):
                             )
                     """))
 
+            # --- APP_URLS.PY --- 
+            with open("app_urls.py", "a") as pyf:
+                pyf.write(textwrap.dedent("""\n
+                    router = routers.DefaultRouter()
+                """))
+
+
+            # --- ITERATE OVER OBJECTS --- #
+            index = 0
+            for key, values in data.items():
+                key = key.replace("-", "")
+
+                # --- APP_VIEWS.PY --- #
+                with open("app_views.py", "a") as pyf:
+                    pyf.write(textwrap.dedent("""\n
+                        class {}ViewSet(viewsets.ModelViewSet):
+                            queryset = {}.objects.all()
+                            serializer_class = {}Serializer
+                    """.format(key.capitalize(), key, key.capitalize())))
+
+
+                # --- APP_URLS.PY --- 
+                with open("app_urls.py", "a") as pyf:
+                    pyf.write("\nrouter.register(r'{}', {}ViewSet)".format(key, key.capitalize()))
+
+
+            # --- CREATE_OBJECT.PY --- #
             with open("create_object.py", "a") as pyf:
                 pyf.write(textwrap.dedent("""\
                     #
                         return command
+                """))
+
+            with open("create_object.py", "r") as pyf:
+                lines = pyf.readlines()
+
+            with open("create_object.py", "w") as pyf:
+                for line in lines:
+                    if line.strip("\n") != "#":
+                        pyf.write(line)
+
+
+            # --- APP_URLS.PY --- #
+            with open("app_urls.py", "a") as pyf:
+                pyf.write(textwrap.dedent("""\n
+                    urlpatterns = [
+                        path('', include(router.urls)),
+                    ]
+                """))
+
+
+            # --- PROJECT_URLS.PY --- #
+            with open("project_urls.py", "a") as pyf:
+                pyf.write(textwrap.dedent("""\n
+                    class UserSerializer(serializers.HyperlinkedModelSerializer):
+                        class Meta:
+                            model = User
+                            fields = ['url', 'username', 'email', 'is_staff']
+
+
+                    class UserViewSet(viewsets.ModelViewSet):
+                        queryset = User.objects.all()
+                        serializer_class = UserSerializer
+
+
+                    router = routers.DefaultRouter()
+                    router.register(r'users', UserViewSet)
+
+                    urlpatterns = [
+                        path('admin/', admin.site.urls),
+                        path('', include(router.urls)),
+                        path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+                    ]
                 """))
