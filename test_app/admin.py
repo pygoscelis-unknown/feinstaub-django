@@ -1,31 +1,5 @@
 from django.contrib import admin
-from .models import bme280
-from .models import bmp180
-from .models import bmp280
-from .models import dht22
-from .models import ds18b20
-from .models import hpm
-from .models import htu21d
-from .models import laerm
-from .models import nextpm
-from .models import pms1003
-from .models import pms3003
-from .models import pms5003
-from .models import pms6003
-from .models import pms7003
-from .models import ppd42ns
-from .models import radiation_sbm19
-from .models import radiation_sbm20
-from .models import radiation_si22g
-from .models import scd30
-from .models import sds011
-from .models import sht11
-from .models import sht15
-from .models import sht30
-from .models import sht31
-from .models import sht35
-from .models import sht85
-from .models import sps30
+from .models import bme280, bmp180, bmp280, dht22, ds18b20, hpm, htu21d, laerm, nextpm, pms1003, pms3003, pms5003, pms6003, pms7003, ppd42ns, radiation_sbm19, radiation_sbm20, radiation_si22g, scd30, sds011, sht11, sht15, sht30, sht31, sht35, sht85, sps30
 admin.site.register(bme280)
 admin.site.register(bmp180)
 admin.site.register(bmp280)
