@@ -16,10 +16,10 @@ note.md
 *.csv
 
 # exclude temporarily generated files
-app_admin.py
-app_models.py
-app_serializers.py
-app_views.py
-app_urls.py
+admin.py
+models.py
+serializers.py
+views.py
+urls.py
 create_object.py
-project_urls.py
+p_urls.py
