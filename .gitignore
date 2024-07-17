@@ -10,3 +10,16 @@ note.md
 .env
 .env.old
 .idea
+
+# imported files
+*.zip
+*.csv
+
+# exclude temporarily generated files
+app_admin.py
+app_models.py
+app_serializers.py
+app_views.py
+app_urls.py
+create_object.py
+project_urls.py

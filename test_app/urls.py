@@ -1,9 +1,7 @@
-from rest_framework import routers
 from django.urls import path, include
+from rest_framework import routers
 from .views import Bme280ViewSet, Bmp180ViewSet, Bmp280ViewSet, Dht22ViewSet, Ds18b20ViewSet, HpmViewSet, Htu21dViewSet, LaermViewSet, NextpmViewSet, Pms1003ViewSet, Pms3003ViewSet, Pms5003ViewSet, Pms6003ViewSet, Pms7003ViewSet, Ppd42nsViewSet, Radiation_sbm19ViewSet, Radiation_sbm20ViewSet, Radiation_si22gViewSet, Scd30ViewSet, Sds011ViewSet, Sht11ViewSet, Sht15ViewSet, Sht30ViewSet, Sht31ViewSet, Sht35ViewSet, Sht85ViewSet, Sps30ViewSet
-
 router = routers.DefaultRouter()
-
 router.register(r'bme280', Bme280ViewSet)
 router.register(r'bmp180', Bmp180ViewSet)
 router.register(r'bmp280', Bmp280ViewSet)
@@ -31,7 +29,6 @@ router.register(r'sht31', Sht31ViewSet)
 router.register(r'sht35', Sht35ViewSet)
 router.register(r'sht85', Sht85ViewSet)
 router.register(r'sps30', Sps30ViewSet)
-
 urlpatterns = [
     path('', include(router.urls)),
 ]

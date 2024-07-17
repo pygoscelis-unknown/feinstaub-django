@@ -49,6 +49,7 @@ class Command(BaseCommand):
 
             with open("app_urls.py", "w") as pyf:
                 pyf.write(textwrap.dedent("""\
+                    from django.urls import path, include
                     from rest_framework import routers
                 """))
 
@@ -64,12 +65,14 @@ class Command(BaseCommand):
                 pyf.write("")
 
 
-            # --- APP_MODELS.PY --- #
+            # --- ITERATE OVER OBJECTS --- #
+            index = 0
             for key, values in data.items():
                 key = key.replace("-", "")
 
+
                 with open("app_models.py", "a") as pyf:
-                    pyf.write(textwrap.dedent("""\n
+                    pyf.write(textwrap.dedent("""\
                         class {}(models.Model):
                     """.format(key)))
 
@@ -96,6 +99,49 @@ class Command(BaseCommand):
                                 {} = models.FloatField(null=True, blank=True)
                             """).format(value))
 
+
+                # --- IMPORT MODELS --- #
+                with open("app_admin.py", "a") as pyf:
+                    if index == 0:
+                        pyf.write("from .models import {}".format(key))
+                    else:
+                        if index == len(data) - 1:
+                            pyf.write(", {}\n".format(key))
+                        else:
+                            pyf.write(", {}".format(key))
+
+                with open("app_serializers.py", "a") as pyf:
+                    if index == 0:
+                        pyf.write("from .models import {}".format(key))
+                    else:
+                        if index == len(data) - 1:
+                            pyf.write(", {}\n".format(key))
+                        else:
+                            pyf.write(", {}".format(key))
+
+                with open("app_views.py", "a") as pyf:
+                    if index == 0:
+                        pyf.write("from .models import {}".format(key))
+                    else:
+                        if index == len(data) - 1:
+                            pyf.write(", {}\n".format(key))
+                        else:
+                            pyf.write(", {}".format(key))
+
+                with open("create_object.py", "a") as pyf:
+                    if index == 0:
+                        pyf.write("from {}.models import {}".format(apps_name, key))
+                    else:
+                        if index == len(data) - 1:
+                            pyf.write(", {}\n".format(key))
+                        else:
+                            pyf.write(", {}".format(key))
+
+                index += 1
+
+
+
+            # --- APP_MODELS.PY --- #
             with open("app_models.py", "r") as pyf:
                 lines = pyf.readlines()
 
@@ -105,82 +151,48 @@ class Command(BaseCommand):
                         pyf.write(line)
 
 
-            # --- ITERATE OVER OBJECTS --- #
-            index = 0
-            for key, values in data.items():
-                key = key.replace("-", "")
-
-
-                # --- IMPORT MODELS --- #
-                with open("app_admin.py", "a") as pyf:
-                    if index == 0:
-                        pyf.write("from .models import {}".format(key))
-                    else:
-                        pyf.write(", {}".format(key))
-
-                with open("app_serializers.py", "a") as pyf:
-                    if index == 0:
-                        pyf.write("from .models import {}".format(key))
-                    else:
-                        pyf.write(", {}".format(key))
-
-                with open("app_views.py", "a") as pyf:
-                    if index == 0:
-                        pyf.write("from .models import {}".format(key))
-                    else:
-                        pyf.write(", {}".format(key))
-
-                with open("create_object.py", "a") as pyf:
-                    if index == 0:
-                        pyf.write("from {}.models import {}".format(apps_name, key))
-                        index += 1
-                    else:
-                        pyf.write(", {}".format(key))
-
-
             # --- CREATE_OBJECT.PY --- #
             with open("create_object.py", "a") as pyf:
-                pyf.write(textwrap.dedent("""\n
-                    def create(sensor_type, row):
-                """))
+                pyf.write("def create(sensor_type, row):\n")
 
 
             # --- ITERATE OVER OBJECTS --- #
             index = 0
             for key, values in data.items():
                 key = key.replace("-", "")
-
 
                 # --- APP_ADMIN.PY --- #
                 with open("app_admin.py", "a") as pyf:
-                    pyf.write("\nadmin.site.register({})".format(key))
-
+                    pyf.write("admin.site.register({})\n".format(key))
 
                 # --- APP_VIEWS.PY --- #
                 with open("app_views.py", "a") as pyf:
                     if index == 0:
-                        pyf.write("\nfrom .serializers import {}Serializer".format(key.capitalize()))
+                        pyf.write("from .serializers import {}Serializer".format(key.capitalize()))
                     else:
-                        pyf.write(", {}Serializer".format(key.capitalize()))
-
+                        if index == len(data) - 1:
+                            pyf.write(", {}Serializer\n".format(key.capitalize()))
+                        else:
+                            pyf.write(", {}Serializer".format(key.capitalize()))
 
                 # --- APP_SERIALIZERS.PY --- #
                 with open("app_serializers.py", "a") as pyf:
-                    pyf.write(textwrap.dedent("""\n
+                    pyf.write(textwrap.dedent("""\
                         class {}Serializer(serializers.HyperlinkedModelSerializer):
                             class Meta:
                                 model = {}
                                 fields = "__all__"
                     """.format(key.capitalize(), key)))
 
-
                 # --- APP_URLS.PY --- #
                 with open("app_urls.py", "a") as pyf:
                     if index == 0:
                         pyf.write("from .views import {}ViewSet".format(key.capitalize()))
                     else:
-                        pyf.write(", {}ViewSet".format(key.capitalize()))
-
+                        if index == len(data) - 1:
+                            pyf.write(", {}ViewSet\n".format(key.capitalize()))
+                        else:
+                            pyf.write(", {}ViewSet".format(key.capitalize()))
 
                 # --- CREATE_OBJECT.PY --- #
                 with open("create_object.py", "a") as pyf:
@@ -190,24 +202,25 @@ class Command(BaseCommand):
                             command = {}.objects.create(
                     """.format(key, key)))
 
-                    index = 0
+                    subindex = 0
                     for value in values:
                         pyf.write(textwrap.dedent("""\
                         #
                                 {}=row[{}],
-                        """).format(value, index))
-                        index += 1
+                        """).format(value, subindex))
+                        subindex += 1
 
                     pyf.write(textwrap.dedent("""\
                     #
                             )
                     """))
 
+
+                index += 1
+
             # --- APP_URLS.PY --- 
             with open("app_urls.py", "a") as pyf:
-                pyf.write(textwrap.dedent("""\n
-                    router = routers.DefaultRouter()
-                """))
+                pyf.write("router = routers.DefaultRouter()\n")
 
 
             # --- ITERATE OVER OBJECTS --- #
@@ -217,7 +230,7 @@ class Command(BaseCommand):
 
                 # --- APP_VIEWS.PY --- #
                 with open("app_views.py", "a") as pyf:
-                    pyf.write(textwrap.dedent("""\n
+                    pyf.write(textwrap.dedent("""\
                         class {}ViewSet(viewsets.ModelViewSet):
                             queryset = {}.objects.all()
                             serializer_class = {}Serializer
@@ -226,7 +239,7 @@ class Command(BaseCommand):
 
                 # --- APP_URLS.PY --- 
                 with open("app_urls.py", "a") as pyf:
-                    pyf.write("\nrouter.register(r'{}', {}ViewSet)".format(key, key.capitalize()))
+                    pyf.write("router.register(r'{}', {}ViewSet)\n".format(key, key.capitalize()))
 
 
             # --- CREATE_OBJECT.PY --- #
@@ -247,7 +260,7 @@ class Command(BaseCommand):
 
             # --- APP_URLS.PY --- #
             with open("app_urls.py", "a") as pyf:
-                pyf.write(textwrap.dedent("""\n
+                pyf.write(textwrap.dedent("""\
                     urlpatterns = [
                         path('', include(router.urls)),
                     ]
@@ -256,24 +269,20 @@ class Command(BaseCommand):
 
             # --- PROJECT_URLS.PY --- #
             with open("project_urls.py", "a") as pyf:
-                pyf.write(textwrap.dedent("""\n
+                pyf.write(textwrap.dedent("""\
                     class UserSerializer(serializers.HyperlinkedModelSerializer):
                         class Meta:
                             model = User
                             fields = ['url', 'username', 'email', 'is_staff']
-
-
                     class UserViewSet(viewsets.ModelViewSet):
                         queryset = User.objects.all()
                         serializer_class = UserSerializer
-
-
                     router = routers.DefaultRouter()
                     router.register(r'users', UserViewSet)
-
                     urlpatterns = [
                         path('admin/', admin.site.urls),
                         path('', include(router.urls)),
+                        path('{}/', include('{}.urls')),
                         path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
                     ]
-                """))
+                """.format(apps_name, apps_name)))
