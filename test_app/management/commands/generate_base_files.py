@@ -16,16 +16,18 @@ class Command(BaseCommand):
     help = "generate base files from json"
 
     def add_arguments(self, parser):
-        parser.add_argument('--path', type=str)
-        parser.add_argument('--app', type=str)
+        parser.add_argument('--json', type=str, help="Path to header json file")
+        parser.add_argument('--project', type=str, help="Your django project name")
+        parser.add_argument('--app', type=str, help="Your django app name")
 
     def handle(self, *args, **kwargs):
-        path = kwargs['path']
-        apps_name = kwargs['app']
+        json_file = kwargs['json']
+        project_name = kwargs['project']
+        app_name = kwargs['app']
 
 
         # --- GET HEADER DATA --- #
-        with open(path) as f:
+        with open(json_file) as f:
             data = json.load(f)
 
         # --- INIT FILES --- #
@@ -148,7 +150,7 @@ class Command(BaseCommand):
 
             with open(app_commandfiles[0], "a") as pyf:
                 if index == 0:
-                    pyf.write("from {}.models import {}".format(apps_name, key))
+                    pyf.write("from {}.models import {}".format(app_name, key))
                 else:
                     if index == len(data) - 1:
                         pyf.write(", {}\n".format(key))
@@ -303,22 +305,31 @@ class Command(BaseCommand):
                     path('{}/', include('{}.urls')),
                     path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
                 ]
-            """.format(apps_name, apps_name)))
+            """.format(app_name, app_name)))
 
-        if os.path.exists("{}".format(apps_name)):
+        if os.path.exists("{}".format(app_name)):
             for filename in app_basefiles:
-                os.replace(filename, "{}/{}".format(apps_name, filename))
+                os.replace(filename, "{}/{}".format(app_name, filename))
         else:
             print("Target app folder is missing! Aborting ...")
             for d in [app_basefiles, app_commandfiles, project_filenames]:
                 for filename in d:
                     os.remove(filename)
 
-        if os.path.exists("{}/management/commands".format(apps_name)):
+        if os.path.exists("{}/management/commands".format(app_name)):
             for filename in app_commandfiles:
-                os.replace(filename, "{}/management/commands/{}".format(apps_name, filename))
+                os.replace(filename, "{}/management/commands/{}".format(app_name, filename))
         else:
             print("Target app command folder is missing! Aborting ...")
+            for d in [app_basefiles, app_commandfiles, project_filenames]:
+                for filename in d:
+                    os.remove(filename)
+
+        if os.path.exists("{}".format(project_name)):
+            for filename in project_filenames:
+                os.replace(filename, "{}/{}".format(project_name, filename.replace("p_", "")))
+        else:
+            print("Target project folder is missing! Aborting ...")
             for d in [app_basefiles, app_commandfiles, project_filenames]:
                 for filename in d:
                     os.remove(filename)
