@@ -252,14 +252,31 @@ class Command(BaseCommand):
             with open(app_basefiles[3], "a") as pyf:
                 pyf.write(textwrap.dedent("""\
                     class {}ViewSet(viewsets.ModelViewSet):
-                        queryset = {}.objects.all()
                         serializer_class = {}Serializer
-                """.format(key.capitalize(), key, key.capitalize())))
+                        def get_queryset(self):
+                            queryset = {}.objects.all()
+                            queried_sensor_id = self.request.query_params.get("sensor_id")
+                            if queried_sensor_id is not None:
+                                queryset = queryset.filter(sensor_id=queried_sensor_id)
+                            queried_location = self.request.query_params.get("location")
+                            if queried_location is not None:
+                                queryset = queryset.filter(location=queried_location)
+                            queried_year = self.request.query_params.get("year")
+                            if queried_year is not None:
+                                queryset = queryset.filter(timestamp__year=queried_year)
+                            queried_month = self.request.query_params.get("month")
+                            if queried_month is not None:
+                                queryset = queryset.filter(timestamp__month=queried_month)
+                            queried_day = self.request.query_params.get("day")
+                            if queried_day is not None:
+                                queryset = queryset.filter(timestamp__day=queried_day)
+                            return queryset
+                """.format(key.capitalize(), key.capitalize(), key)))
 
 
             # --- APP_URLS.PY --- 
             with open(app_basefiles[4], "a") as pyf:
-                pyf.write("router.register(r'{}', {}ViewSet)\n".format(key, key.capitalize()))
+                pyf.write("router.register(r'{}', {}ViewSet, basename='{}')\n".format(key, key.capitalize(), key))
 
 
         # --- CREATE_OBJECT.PY --- #
