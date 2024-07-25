@@ -333,9 +333,9 @@ class Command(BaseCommand):
                 for filename in d:
                     os.remove(filename)
 
-        if os.path.exists("{}/management/commands".format(app_name)):
+        if os.path.exists("{}/management/commands/modules".format(app_name)):
             for filename in app_commandfiles:
-                os.replace(filename, "{}/management/commands/{}".format(app_name, filename))
+                os.replace(filename, "{}/management/commands/modules/{}".format(app_name, filename))
         else:
             print("Target app command folder is missing! Aborting ...")
             for d in [app_basefiles, app_commandfiles, project_filenames]:
