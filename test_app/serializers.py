@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import bme280, bmp180, bmp280, dht22, ds18b20, hpm, htu21d, laerm, nextpm, pms1003, pms3003, pms5003, pms6003, pms7003, ppd42ns, radiation_sbm19, radiation_sbm20, radiation_si22g, scd30, sds011, sht11, sht15, sht30, sht31, sht35, sht85, sps30
+from .models import bme280, bmp180, bmp280, dht22, ds18b20, hpm, htu21d, laerm, nextpm, pms1003, pms3003, pms5003, pms6003, pms7003, ppd42ns, radiation_sbm19, radiation_sbm20, radiation_si22g, scd30, sds011, sen5x, sht10, sht11, sht15, sht30, sht31, sht35, sht85, sps30
 class Bme280Serializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = bme280
@@ -79,6 +79,14 @@ class Scd30Serializer(serializers.HyperlinkedModelSerializer):
 class Sds011Serializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = sds011
+        fields = "__all__"
+class Sen5xSerializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = sen5x
+        fields = "__all__"
+class Sht10Serializer(serializers.HyperlinkedModelSerializer):
+    class Meta:
+        model = sht10
         fields = "__all__"
 class Sht11Serializer(serializers.HyperlinkedModelSerializer):
     class Meta:
