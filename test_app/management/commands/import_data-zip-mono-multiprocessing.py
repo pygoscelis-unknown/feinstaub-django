@@ -9,39 +9,49 @@ import datetime
 import time
 from .modules.sensor_type import get_sensor_type
 from .modules.multiprocessing import main as create_objects
+from .modules.get_env_vars import get_sensor_archive_url
 
-# command example
-# python manage.py import_data-zip-multiprocessing --url http://archive.sensor.community --year 2024 --month 03 --type bme280
 
 class Command(BaseCommand):
-    help = 'Load data from csv file into the database'
+    help = """
+    Loads data from csv files into the database.
+    This command downloads zip files of a specific sensor type available in zip format, unzip them and load data from the extracted csv files into the database.
+    """
 
     def add_arguments(self, parser):
-        parser.add_argument('--url', type=str)
-        parser.add_argument('--year', type=str)
-        parser.add_argument('--month', type=str)
-        parser.add_argument('--type', type=str)
+        parser.add_argument("--year", type=str, help="Format: YYYY")
+        parser.add_argument("--month", type=str, help="Format: MM")
+        parser.add_argument("--type", type=str, help="The name of the target sensor type")
 
     def handle(self, *args, **kwargs):
 
-        base_url = kwargs['url']
-        year = kwargs['year']
-        month = kwargs['month']
-        date = year + '-' + month
-        sensor_type = kwargs['type']
-        url = base_url + "/csv_per_month/" + date + "/" + date + '_' + sensor_type + '.zip'
+        base_url = get_sensor_archive_url()
+        year = kwargs["year"]
+        month = kwargs["month"]
+        date = year + "-" + month
+        sensor_type = kwargs["type"]
+        url = (
+            base_url
+            + "/csv_per_month/"
+            + date
+            + "/"
+            + date
+            + "_"
+            + sensor_type
+            + ".zip"
+        )
         file_name = date + "_" + sensor_type
 
         start = time.time()
 
         print("Downloading zip ...", end="\r")
         urllib.request.urlretrieve(url, file_name + ".zip")
-        with zipfile.ZipFile(file_name + ".zip", 'r') as zip_ref:
+        with zipfile.ZipFile(file_name + ".zip", "r") as zip_ref:
             print("Extracting zip ...")
             zip_ref.extractall("./")
 
-        with open(file_name + '.csv', newline='') as csvfile:
-            reader = csv.reader(csvfile, delimiter=';')
+        with open(file_name + ".csv", newline="") as csvfile:
+            reader = csv.reader(csvfile, delimiter=";")
             rows = [x for x in reader]
             header = rows.pop(0)
 
@@ -54,7 +64,7 @@ class Command(BaseCommand):
                 os.remove(f)
                 print("File {} deleted.".format(f))
             else:
-              print("Failed to delete file {}.".format(f))
+                print("Failed to delete file {}.".format(f))
 
         end = time.time()
         total_time = end - start

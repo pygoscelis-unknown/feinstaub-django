@@ -9,20 +9,17 @@ import time
 from .modules.sensor_type import get_sensor_type
 from .modules.create_object import create
 
-# command example
-# python manage.py import_data-file --path path/to/file 
 
 class Command(BaseCommand):
-    help = 'Load data from local csv file into the database'
+    help = "Load data from a local csv file into the the database."
 
     def add_arguments(self, parser):
-        parser.add_argument('--path', type=str)
-        parser.add_argument('--date', type=str)
-        parser.add_argument('--type', type=str)
+        parser.add_argument("--path", type=str, help="Path to a local csv file")
+        parser.add_argument("--type", type=str, help="The name of the sensor type must additionaly be set")
 
     def handle(self, *args, **kwargs):
-        path = kwargs['path']
-        sensor_type = kwargs['type']
+        path = kwargs["path"]
+        sensor_type = kwargs["type"]
 
         start = time.time()
         object_count = 0
@@ -47,21 +44,21 @@ class Command(BaseCommand):
                 for i in range(len(row)):
                     if header[i] != "sensor_type":
                         if header[i] == "sensor_id" or header[i] == "location":
-                            #int
+                            # int
                             try:
                                 row[i] = int(row[i])
                             except ValueError:
                                 row[i] = None
 
                         elif header[i] == "timestamp":
-                            #timestamp
+                            # timestamp
                             try:
                                 row[i] = datetime.datetime.fromisoformat(row[i])
                             except ValueError:
                                 row[i] = None
 
                         else:
-                            #float
+                            # float
                             try:
                                 row[i] = float(row[i])
                             except ValueError:

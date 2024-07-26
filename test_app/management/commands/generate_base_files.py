@@ -13,7 +13,10 @@ import json
 import textwrap
 
 class Command(BaseCommand):
-    help = "generate base files from json"
+    help = """
+    Generates base files from csv header json file.
+    Adds the current django project name and the target app name to store the base files in appropriate locations
+    """
 
     def add_arguments(self, parser):
         parser.add_argument('--json', type=str, help="Path to header json file")

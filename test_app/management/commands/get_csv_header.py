@@ -10,17 +10,22 @@ from .modules.csv import get_header
 from .modules.sensor_type import get_sensor_type
 from .modules.sensor_type_queue import register, skip
 import json
+from .modules.get_env_vars import get_sensor_archive_url
 
 
 class Command(BaseCommand):
-    help = "get header of csv"
+    help = """
+    Gets header from a csv file.
+    The date of the most recent csv file should be inserted as date arg to update header constantly.
+    Check if the csv file of the date is already existing on archive before executing.
+    """
+
 
     def add_arguments(self, parser):
-        parser.add_argument('--url', type=str)
-        parser.add_argument('--date', type=str)
+        parser.add_argument('--date', type=str, help="Date of the most recent csv file")
 
     def handle(self, *args, **kwargs):
-        website = kwargs['url']
+        website = get_sensor_archive_url()
         date = kwargs['date']
 
         base_url = website + "/" + date + "/"

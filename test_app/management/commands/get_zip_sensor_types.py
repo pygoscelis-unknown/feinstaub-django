@@ -9,22 +9,17 @@ import zipfile
 import datetime
 from .modules.sensor_type import get_sensor_type
 from .modules.create_object import create
-
-# command example
-# python manage.py compare_sensor_types --url http://archive.sensor.community
+from .modules.get_env_vars import get_sensor_archive_url
 
 
 class Command(BaseCommand):
     help = """
-    Print all sensor types saved as csv per month in zip format into json files: see http://archive.sensor.community/csv_per_month/
+    Prints all sensor types whose data have been saved in csv_per_month-zip format into the following json files: ./zip_filenames.json and ./sensor_types-zip.json in project root - for more detail, visit http://archive.sensor.community/csv_per_month/
     """
-
-    def add_arguments(self, parser):
-        parser.add_argument("--url", type=str)
 
     def handle(self, *args, **kwargs):
 
-        url = kwargs["url"] + "/csv_per_month/"
+        url = get_sensor_archive_url() + "/csv_per_month/"
         page = requests.get(url)
         soup = BeautifulSoup(page.content, "html.parser")
         sensor_type_queue = dict()

@@ -8,30 +8,32 @@ import datetime
 import time
 from .modules.sensor_type import get_sensor_type
 from .modules.create_object import create
+from .modules.get_env_vars import get_sensor_archive_url
 
-# command example
-# python manage.py import_data-all --url http://archive.sensor.community --date 2023-12-25
 
 class Command(BaseCommand):
-    help = 'Load data csv file into the database'
+    help = """
+    Loads data from csv files into the database.
+    This command loads directly data of all sensor types available in csv format into the database.
+    The date must be set in the following format: YYYY-MM-DD
+    """
 
     def add_arguments(self, parser):
-        parser.add_argument('--url', type=str)
-        parser.add_argument('--date', type=str)
+        parser.add_argument("--date", type=str, help="Format: YYYY-MM-DD")
 
     def handle(self, *args, **kwargs):
 
-        website = kwargs['url']
-        date = kwargs['date']
+        website = get_sensor_archive_url()
+        date = kwargs["date"]
         base_url = website + "/" + date
         page = requests.get(base_url)
         soup = BeautifulSoup(page.content, "html.parser")
 
         start = time.time()
         object_count = 0
-        for i in soup.find_all("a", href = True):
+        for i in soup.find_all("a", href=True):
             if date in i["href"]:
-                sensor_type = get_sensor_type(i['href'], date)
+                sensor_type = get_sensor_type(i["href"], date)
                 sensor_type = sensor_type.replace("-", "")
 
                 if sensor_type != None:
@@ -55,22 +57,27 @@ class Command(BaseCommand):
                             # ignore/convert illigal values
                             for i in range(len(row)):
                                 if header[i] != "sensor_type":
-                                    if header[i] == "sensor_id" or header[i] == "location":
-                                        #int
+                                    if (
+                                        header[i] == "sensor_id"
+                                        or header[i] == "location"
+                                    ):
+                                        # int
                                         try:
                                             row[i] = int(row[i])
                                         except ValueError:
                                             row[i] = None
 
                                     elif header[i] == "timestamp":
-                                        #timestamp
+                                        # timestamp
                                         try:
-                                            row[i] = datetime.datetime.fromisoformat(row[i])
+                                            row[i] = datetime.datetime.fromisoformat(
+                                                row[i]
+                                            )
                                         except ValueError:
                                             row[i] = None
 
                                     else:
-                                        #float
+                                        # float
                                         try:
                                             row[i] = float(row[i])
                                         except ValueError:
