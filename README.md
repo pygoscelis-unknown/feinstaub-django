@@ -1,4 +1,4 @@
-# feinstaub.app
+# Feinstaub API - Django
 
 ## Table of Contents
 
@@ -6,7 +6,15 @@
 -   [Getting Started](#getting-started)
     -   [Prerequisites](#prerequisites)
     -   [Installation](#installation)
+        -   [Clone repository](#clone-repository)
+        -   [Install dependencies](#install-dependencies)
+        -   [Add environment variables](#add-environment-variables)
 -   [Usage](#usage)
+    -   [Start the development server](#start-the-development-server)
+    -   [Apply migrations](#apply-migrations)
+    -   [Get data header from csv files](#get-data-header-from-csv-files)
+    -   [Generate base files for your app](#generate-base-files-for-your-app)
+    -   [Import data from csv files to database](#import-data-from-csv-files-to-database)
 -   [Configuration](#configuration)
 -   [Contributing](#contributing)
 -   [License](#license)
@@ -20,28 +28,26 @@
 - Python 3
 ```bash
 python --version
-django-admin --version
 ```
 
 ### Installation
 
-__Clone repository__
+#### Clone repository
 ```bash
-git clone https://github.com/username/project.git
+git clone https://github.com/pygoscelis-unknown/django-feinstaub.git
 ```
-
 ```bash
 cd django-feinstaub
 ```
 
-__Install dependencies__
+#### Install dependencies
 ```bash
 pip install -r requirements.txt
 ```
 
-__Add environment variables__
-- copy .env.example to .env
-- add secrets
+#### Add environment variables
+- copy .env.example to .env and set your database data
+- add your own secret key
 
 
 ## Usage
@@ -55,35 +61,47 @@ python manage.py runserver
 python manage.py migrate
 ```
 
+### Get data header from csv files
+```bash
+python manage.py get_csv_header --date <YYYY-MM-DD>
+```
+This script generates in your project root sensor_csv_header.json with all sensor types on target link and all header data of each sensor type. The date of the most recent csv file should be used.
 
+### Generate base files for your app
+```bash
+python manage.py generate_base_files --json <PROJECT_ROOT>/sensor_csv_header.json --project <PROJECT_NAME> --app <APP_NAME>
+```
+This scripts generate the following files:
+- models.py
+- admin.py
+- serializers.py
+- views.py
+- urls.py
 
-1. get data header from csv files
-```
-python manage.py get_csv_header-v4 --url {url} --date {date}
-```
-this script generates sensor_csv_header.json with all sensor types on target link and all header data of each sensor type
+    in `<APP_ROOT>/`
 
-2. generate models.py, admin.py and create_object.py
-```
-python manage.py generate_models --path sensor_csv_header.json
-```
-generated script must be moved to apropriate location for next step:
-- models.py, admin.py to target app's root (override existing models.py, admin.py)
-- create_object.py to management/commands/modules/ of target app
+- create_object.py
 
-3. import data from csv files to database
+    in `<APP_ROOT>/management/commands/modules/`
+
+- urls.py
+
+    in `<PROJECT_ROOT>/`
+
+### Import data from csv files to database
+to get data of all sensor types available in zip format for one month from zipped csv files
+```bash
+python manage.py import_data-zip-all-multiprocessing --year <YYYY> --month <MM> --app <APP_NAME>
 ```
-python manage.py import_data-v4 --url {url}
+to get data of a specific sensor type available in zip format for one month from zipped csv files
+```bash
+python manage.py import_data-zip-mono-multiprocessing --year <YYYY> --month <MM> --type <SENSOR_TYPE>
 ```
-This currently fetchs data of yesterday.
-!IS STILL BUGGY! has issues with some timestamps etc.
+Other available commands are to find in `<APP_ROOT>/management/commands/`.
 
 ## Configuration
 
 ## Deployment
-This app is deployed to render.com. As a build command render uses the `build.sh` script to install dependencies and run migrations.
-
-Render provides an internal and external database connection string. We use a configuration based on the external connection string.
 
 ## Further information
 This project uses DRF (Django Rest Framework) for the REST API. 
@@ -95,3 +113,4 @@ This project uses DRF (Django Rest Framework) for the REST API.
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
 ## Acknowledgments
+

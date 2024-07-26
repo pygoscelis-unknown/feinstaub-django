@@ -22,7 +22,7 @@ class Command(BaseCommand):
 
 
     def add_arguments(self, parser):
-        parser.add_argument('--date', type=str, help="Date of the most recent csv file")
+        parser.add_argument('--date', type=str, help="Date of the most recent csv file. Format: YYYY-MM-DD")
 
     def handle(self, *args, **kwargs):
         website = get_sensor_archive_url()
