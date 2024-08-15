@@ -49,4 +49,4 @@ def func(sensor_type, header, row):
 
     print(row)
     create_object(sensor_type, row)
-    print("creating objects")
+    print("creating object ...", end="\r")

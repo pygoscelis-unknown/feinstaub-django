@@ -21,7 +21,9 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument("--year", type=str, help="Format: YYYY")
         parser.add_argument("--month", type=str, help="Format: MM")
-        parser.add_argument("--type", type=str, help="The name of the target sensor type")
+        parser.add_argument(
+            "--type", type=str, help="The name of the target sensor type"
+        )
 
     def handle(self, *args, **kwargs):
 
@@ -47,11 +49,14 @@ class Command(BaseCommand):
         print("Downloading zip ...", end="\r")
         urllib.request.urlretrieve(url, file_name + ".zip")
         with zipfile.ZipFile(file_name + ".zip", "r") as zip_ref:
-            print("Extracting zip ...")
+            print("Extracting zip ...", end="\r")
             zip_ref.extractall("./")
 
+        print("Opening file ...", end="\r")
         with open(file_name + ".csv", newline="") as csvfile:
+            print("Reading file ...", end="\r")
             reader = csv.reader(csvfile, delimiter=";")
+            print("Parsing content ...", end="\r")
             rows = [x for x in reader]
             header = rows.pop(0)
 
