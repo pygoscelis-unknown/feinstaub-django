@@ -10,6 +10,7 @@ import time
 from .modules.sensor_type import get_sensor_type
 from .modules.multiprocessing import main as create_objects
 from .modules.get_env_vars import get_sensor_archive_url
+from .modules.csv import get_chunk
 
 
 class Command(BaseCommand):
@@ -56,11 +57,14 @@ class Command(BaseCommand):
         with open(file_name + ".csv", newline="") as csvfile:
             print("Reading file ...", end="\r")
             reader = csv.reader(csvfile, delimiter=";")
-            print("Parsing content ...", end="\r")
-            rows = [x for x in reader]
-            header = rows.pop(0)
 
-            create_objects(sensor_type, header, rows)
+            print("Parsing content ...", end="\r")
+            for index, chunk in get_chunk(reader, 100000):
+                if index == 0:
+                    header = chunk.pop(0)
+                rows = [x for x in chunk]
+
+                create_objects(sensor_type, header, rows)
 
         # delete csv and zip
         for f in [file_name + ".zip", file_name + ".csv"]:
