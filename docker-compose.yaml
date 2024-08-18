@@ -11,7 +11,20 @@ services:
     volumes:
       - data:/var/lib/postgresql/data
     command: ["postgres", "-c", "log_statement=all"]
-  web:
+    networks:
+      - app-network
+  frontend:
+    build: ../frontend
+    command: pnpm start
+    ports:
+      - "3000:3000"
+    env_file:
+      ../frontend/.env
+    networks:
+      - app-network
+    depends_on:
+      - backend
+  backend:
     build: .
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
@@ -22,6 +35,8 @@ services:
       - ./.env.dev
     depends_on:
       - db
+    networks:
+      - app-network
   adminer:
     image: adminer:latest
     restart: unless-stopped
@@ -29,7 +44,13 @@ services:
       - "8080:8080"
     depends_on:
       - db
+    networks:
+      - app-network
 
 volumes:
   data:
     driver: local
+
+networks:
+  app-network:
+    driver: bridge
