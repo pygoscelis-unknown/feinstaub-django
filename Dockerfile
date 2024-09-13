@@ -1,5 +1,5 @@
 # pull official base image
-FROM FROM python:3
+FROM python:3
 
 # set work directory
 WORKDIR /usr/src/app
