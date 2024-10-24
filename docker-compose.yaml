@@ -5,16 +5,26 @@ services:
     ports:
       - 5432:5432
     env_file:
-      - .env
+      .env
     volumes:
       - data:/var/lib/postgresql/data
     command: ["postgres", "-c", "log_statement=all"]
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 10s
+      retries: 5
+      start_period: 30s
+      timeout: 10s
         
   adminer:
     image: adminer:latest
     restart: unless-stopped
     ports:
       - 8080:8080
+    depends_on:
+      db:
+        condition: service_healthy
+        restart: true
  
 volumes:
   data:
