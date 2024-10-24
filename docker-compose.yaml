@@ -5,7 +5,7 @@ services:
     ports:
       - 5432:5432
     env_file:
-      - db.env
+      - .env
     volumes:
       - data:/var/lib/postgresql/data
     command: ["postgres", "-c", "log_statement=all"]
