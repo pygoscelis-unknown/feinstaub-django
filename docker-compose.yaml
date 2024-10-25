@@ -32,6 +32,12 @@ services:
       - 8000:8000
     env_file:
       .env
+    command: ["sh", "-cx", "
+      python manage.py get_csv_header --date $(date -d '30 days ago' +%Y-%m-%d) && \
+      python manage.py generate_base_files --json ./sensor_csv_header.json --project ${DJANGO_PROJECT_NAME} --app ${DJANGO_APP_NAME} && \
+      python manage.py makemigrations && \
+      python manage.py migrate && \
+      python manage.py runserver 0.0.0.0:8000"]
     depends_on:
       db:
         condition: service_healthy
