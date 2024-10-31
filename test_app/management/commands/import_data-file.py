@@ -6,6 +6,7 @@ import requests
 import urllib.request
 import datetime
 import time
+import math
 from .modules.sensor_type import get_sensor_type
 from .modules.create_object import create
 
@@ -15,7 +16,11 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument("--path", type=str, help="Path to a local csv file")
-        parser.add_argument("--type", type=str, help="The name of the sensor type must additionaly be set")
+        parser.add_argument(
+            "--type",
+            type=str,
+            help="The name of the sensor type must additionaly be set",
+        )
 
     def handle(self, *args, **kwargs):
         path = kwargs["path"]
@@ -61,6 +66,8 @@ class Command(BaseCommand):
                             # float
                             try:
                                 row[i] = float(row[i])
+                                if math.isnan(row[i]):
+                                    row[i] = None
                             except ValueError:
                                 row[i] = None
 

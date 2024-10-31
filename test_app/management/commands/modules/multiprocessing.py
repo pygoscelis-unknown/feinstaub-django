@@ -4,6 +4,7 @@ django.setup()
 from itertools import repeat
 from .create_object import create as create_object
 import datetime
+import math
 
 import multiprocessing
 
@@ -44,6 +45,8 @@ def func(sensor_type, header, row):
                 # float
                 try:
                     row[i] = float(row[i])
+                    if math.isnan(row[i]):
+                        row[i] = None
                 except ValueError:
                     row[i] = None
 

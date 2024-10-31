@@ -6,6 +6,7 @@ import requests
 import urllib.request
 import datetime
 import time
+import math
 from .modules.sensor_type import get_sensor_type
 from .modules.create_object import create
 from .modules.get_env_vars import get_sensor_archive_url
@@ -80,6 +81,8 @@ class Command(BaseCommand):
                                         # float
                                         try:
                                             row[i] = float(row[i])
+                                            if math.isnan(row[i]):
+                                                row[i] = None
                                         except ValueError:
                                             row[i] = None
 

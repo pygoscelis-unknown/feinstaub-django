@@ -7,6 +7,7 @@ import urllib.request
 import zipfile
 import datetime
 import time
+import math
 from .modules.sensor_type import get_sensor_type
 from .modules.create_object import create
 from .modules.get_env_vars import get_sensor_archive_url
@@ -21,7 +22,9 @@ class Command(BaseCommand):
     def add_arguments(self, parser):
         parser.add_argument("--year", type=str, help="Format: YYYY")
         parser.add_argument("--month", type=str, help="Format: MM")
-        parser.add_argument("--type", type=str, help="The name of the target sensor type")
+        parser.add_argument(
+            "--type", type=str, help="The name of the target sensor type"
+        )
 
     def handle(self, *args, **kwargs):
 
@@ -86,6 +89,8 @@ class Command(BaseCommand):
                                 # float
                                 try:
                                     row[i] = float(row[i])
+                                    if math.isnan(row[i]):
+                                        row[i] = None
                                 except ValueError:
                                     row[i] = None
 
