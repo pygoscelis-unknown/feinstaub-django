@@ -1,3 +1,5 @@
+import django
+django.setup()
 from test_app.models import bme280, bmp180, bmp280, dht22, ds18b20, hpm, htu21d, laerm, nextpm, pms1003, pms3003, pms5003, pms6003, pms7003, ppd42ns, radiation_sbm19, radiation_sbm20, radiation_si22g, scd30, sds011, sen5x, sht10, sht11, sht15, sht30, sht31, sht35, sht85, sps30
 def create(sensor_type, row):
     if sensor_type == "bme280":

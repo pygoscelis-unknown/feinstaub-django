@@ -1,6 +1,3 @@
-import django
-
-django.setup()
 from itertools import repeat
 from .create_object import create as create_object
 import datetime
