@@ -85,7 +85,10 @@ class Command(BaseCommand):
             """))
 
         with open(app_commandfiles[0], "w") as pyf:
-            pyf.write("")
+            pyf.write(textwrap.dedent("""\
+                import django
+                django.setup()
+            """))
 
 
         # --- ITERATE OVER OBJECTS --- #

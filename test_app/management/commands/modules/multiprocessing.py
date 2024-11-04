@@ -1,7 +1,5 @@
-import django
-
-django.setup()
 from itertools import repeat
+from .convert_values import main as convert_values
 from .create_object import create as create_object
 import datetime
 import math
@@ -24,32 +22,8 @@ def main(sensor_type, header, rows):
 
 
 def func(sensor_type, header, row):
-    # convert illegal values
-    for i in range(len(row)):
-        if header[i] != "sensor_type":
-            if header[i] == "sensor_id" or header[i] == "location":
-                # int
-                try:
-                    row[i] = int(row[i])
-                except ValueError:
-                    row[i] = None
+    new_row = convert_values(sensor_type, header, row)
 
-            elif header[i] == "timestamp":
-                # timestamp
-                try:
-                    row[i] = datetime.datetime.fromisoformat(row[i])
-                except ValueError:
-                    row[i] = None
-
-            else:
-                # float
-                try:
-                    row[i] = float(row[i])
-                    if math.isnan(row[i]):
-                        row[i] = None
-                except ValueError:
-                    row[i] = None
-
-    print(row)
-    create_object(sensor_type, row)
+    print(new_row)
+    create_object(sensor_type, new_row)
     print("creating object ...", end="\r")
