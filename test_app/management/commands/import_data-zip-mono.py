@@ -11,6 +11,7 @@ import math
 from .modules.sensor_type import get_sensor_type
 from .modules.create_object import create
 from .modules.get_env_vars import get_sensor_archive_url
+from .modules.convert_values import main as convert_values
 
 
 class Command(BaseCommand):
@@ -68,33 +69,8 @@ class Command(BaseCommand):
                     index += 1
 
                 else:
-                    # convert illegal values
-                    for i in range(len(row)):
-                        if header[i] != "sensor_type":
-                            if header[i] == "sensor_id" or header[i] == "location":
-                                # int
-                                try:
-                                    row[i] = int(row[i])
-                                except ValueError:
-                                    row[i] = None
-
-                            elif header[i] == "timestamp":
-                                # timestamp
-                                try:
-                                    row[i] = datetime.datetime.fromisoformat(row[i])
-                                except ValueError:
-                                    row[i] = None
-
-                            else:
-                                # float
-                                try:
-                                    row[i] = float(row[i])
-                                    if math.isnan(row[i]):
-                                        row[i] = None
-                                except ValueError:
-                                    row[i] = None
-
-                    create(sensor_type, row)
+                    new_row = convert_values(sensor_type, header, row)
+                    create(sensor_type, new_row)
 
                     object_count += 1
                     print(str(object_count) + ". object created.", end="\r")
