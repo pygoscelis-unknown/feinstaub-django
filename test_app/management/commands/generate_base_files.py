@@ -8,7 +8,6 @@ from datetime import date
 from datetime import timedelta
 import time
 from .modules.csv import get_header
-from .modules.sensor_type_queue import register, skip
 import json
 import textwrap
 
