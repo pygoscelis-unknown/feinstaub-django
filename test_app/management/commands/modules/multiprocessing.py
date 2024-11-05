@@ -24,6 +24,6 @@ def main(sensor_type, header, rows):
 def func(sensor_type, header, row):
     new_row = convert_values(sensor_type, header, row)
 
-    print(new_row)
+    print(new_row, end="\r")
+    print(end="\x1b[2K")
     create_object(sensor_type, new_row)
-    print("creating object ...", end="\r")
