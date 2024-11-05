@@ -1,4 +1,5 @@
 import csv
+import os
 import urllib.request
 
 
@@ -33,3 +34,17 @@ def get_chunk(reader: str, chunksize: int):
             index += 1
         chunk.append(line)
     yield index, chunk
+
+
+def delete_sensor_data_files(file_name):
+    """
+    Delete csv/zip
+    """
+    for f in [file_name + ".zip", file_name + ".csv"]:
+        if os.path.exists(f):
+            print("Deleting file {} ...".format(f), end="\r")
+            os.remove(f)
+            print(end="\x1b[2K")
+            print("File {} deleted.".format(f))
+        else:
+            print("File {} does not exist, nothing to delete.".format(f))
