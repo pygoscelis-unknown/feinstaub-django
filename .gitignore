@@ -14,12 +14,3 @@ note.md
 # imported files
 *.zip
 *.csv
-
-# exclude temporarily generated files
-admin.py
-models.py
-serializers.py
-views.py
-urls.py
-create_object.py
-p_urls.py
