@@ -46,7 +46,7 @@ CSRF_TRUSTED_ORIGINS = [
 
 INSTALLED_APPS = [
     'rest_framework',
-    'test_app.apps.TestAppConfig',
+    'importer.apps.ImporterConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
