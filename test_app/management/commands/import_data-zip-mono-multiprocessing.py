@@ -10,7 +10,7 @@ import time
 from .modules.sensor_type import get_sensor_type
 from .modules.multiprocessing import main as create_objects
 from .modules.get_env_vars import get_sensor_archive_url
-from .modules.csv import get_chunk
+from .modules.csv import get_chunk, delete_sensor_data_files
 
 
 class Command(BaseCommand):
@@ -66,14 +66,7 @@ class Command(BaseCommand):
 
                 create_objects(sensor_type, header, rows)
 
-        # delete csv and zip
-        for f in [file_name + ".zip", file_name + ".csv"]:
-            if os.path.exists(f):
-                print("Deleting file {} ...".format(f))
-                os.remove(f)
-                print("File {} deleted.".format(f))
-            else:
-                print("Failed to delete file {}.".format(f))
+        delete_sensor_data_files(file_name)
 
         end = time.time()
         total_time = end - start

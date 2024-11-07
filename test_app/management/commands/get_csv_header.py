@@ -8,9 +8,17 @@ from datetime import timedelta
 import time
 from .modules.csv import get_header
 from .modules.sensor_type import get_sensor_type
-from .modules.sensor_type_queue import register, skip
 import json
 from .modules.get_env_vars import get_sensor_archive_url
+
+
+def register(dictionary, key, url):
+    print("sensor type not in queue: register sensor type", key, end="\r")
+    dictionary[key] = get_header(url)
+
+
+def skip(key):
+    print("sensor type", key, "already in queue: skip...", end="\r")
 
 
 class Command(BaseCommand):
@@ -20,16 +28,22 @@ class Command(BaseCommand):
     Check if the csv file of the date is already existing on archive before executing.
     """
 
-
     def add_arguments(self, parser):
-        parser.add_argument('--date', type=str, help="Date of the most recent csv file. Format: YYYY-MM-DD")
+        parser.add_argument(
+            "--date",
+            type=str,
+            help="Date of the most recent csv file. Format: YYYY-MM-DD",
+        )
 
     def handle(self, *args, **kwargs):
         website = get_sensor_archive_url()
-        date = kwargs['date']
+        date = kwargs["date"]
 
         base_url = website + "/" + date + "/"
         page = requests.get(base_url)
+
+        print("scanning page ...", end="\r")
+        print(end="\x1b[2K")
         soup = BeautifulSoup(page.content, "html.parser")
         sensor_type_queue = dict()
 
@@ -47,7 +61,8 @@ class Command(BaseCommand):
                     else:
                         skip(sensor_type)
 
+        print(end="\x1b[2K")
         print("writing file ...")
-        with open('sensor_csv_header.json', 'w') as file:
+        with open("sensor_csv_header.json", "w") as file:
             file.write(json.dumps(sensor_type_queue))
         print("see in root path: ./sensor_csv_header.json")

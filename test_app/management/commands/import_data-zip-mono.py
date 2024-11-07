@@ -12,6 +12,7 @@ from .modules.sensor_type import get_sensor_type
 from .modules.create_object import create
 from .modules.get_env_vars import get_sensor_archive_url
 from .modules.convert_values import main as convert_values
+from .modules.csv import delete_sensor_data_files
 
 
 class Command(BaseCommand):
@@ -49,7 +50,7 @@ class Command(BaseCommand):
         start = time.time()
         object_count = 0
 
-        print("Downloading zip ...")
+        print("Downloading zip ...", end="\r")
         urllib.request.urlretrieve(url, file_name + ".zip")
         with zipfile.ZipFile(file_name + ".zip", "r") as zip_ref:
             print("Extracting zip ...", end="\r")
@@ -75,14 +76,8 @@ class Command(BaseCommand):
                     object_count += 1
                     print(str(object_count) + ". object created.", end="\r")
 
-        # delete csv and zip
-        for f in [file_name + ".zip", file_name + ".csv"]:
-            if os.path.exists(f):
-                print("Deleting file {} ...".format(f))
-                os.remove(f)
-                print("File {} deleted.".format(f))
-            else:
-                print("Failed to delete file {}.".format(f))
+        delete_sensor_data_files(file_name)
+
         print("total:", object_count, "objects", end="\r")
 
         end = time.time()
