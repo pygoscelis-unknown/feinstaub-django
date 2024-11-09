@@ -11,6 +11,7 @@ from .modules.sensor_type import get_sensor_type
 from .modules.multiprocessing import main as create_objects
 from .modules.get_env_vars import get_sensor_archive_url
 from .modules.csv import get_chunk, delete_sensor_data_files
+from .modules.show_progress import show_download_progress
 
 
 class Command(BaseCommand):
@@ -47,8 +48,8 @@ class Command(BaseCommand):
 
         start = time.time()
 
-        print("Downloading zip ...", end="\r")
-        urllib.request.urlretrieve(url, file_name + ".zip")
+        print("Downloading zip ...")
+        urllib.request.urlretrieve(url, file_name + ".zip", show_download_progress)
         with zipfile.ZipFile(file_name + ".zip", "r") as zip_ref:
             print("Extracting zip ...", end="\r")
             zip_ref.extractall("./")

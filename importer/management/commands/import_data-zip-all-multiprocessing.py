@@ -1,4 +1,5 @@
 from django.core.management import BaseCommand
+from django.apps import apps
 import csv
 import os
 
@@ -10,11 +11,8 @@ import time
 from .modules.sensor_type import get_sensor_type
 from .modules.multiprocessing import main as create_objects
 from .modules.get_env_vars import get_sensor_archive_url
-from .modules.csv import delete_sensor_data_files
-
-import multiprocessing
-
-from django.apps import apps
+from .modules.csv import get_chunk, delete_sensor_data_files
+from .modules.show_progress import show_download_progress
 
 
 class Command(BaseCommand):
@@ -43,23 +41,40 @@ class Command(BaseCommand):
 
         start = time.time()
 
-        for t in sensor_types:
-            url = base_url + "/csv_per_month/" + date + "/" + date + "_" + t + ".zip"
+        for sensor_type in sensor_types:
+            url = (
+                base_url
+                + "/csv_per_month/"
+                + date
+                + "/"
+                + date
+                + "_"
+                + sensor_type
+                + ".zip"
+            )
 
             try:
-                file_name = date + "_" + t
-                print("Downloading zip ...", end="\r")
-                urllib.request.urlretrieve(url, file_name + ".zip")
+                file_name = date + "_" + sensor_type
+                print("Downloading zip ...")
+                urllib.request.urlretrieve(
+                    url, file_name + ".zip", show_download_progress
+                )
                 with zipfile.ZipFile(file_name + ".zip", "r") as zip_ref:
-                    print("Extracting zip ...")
+                    print("Extracting zip ...", end="\r")
                     zip_ref.extractall("./")
 
+                print("Opening file ...", end="\r")
                 with open(file_name + ".csv", newline="") as csvfile:
+                    print("Reading file ...", end="\r")
                     reader = csv.reader(csvfile, delimiter=";")
-                    rows = [x for x in reader]
-                    header = rows.pop(0)
 
-                    create_objects(t, header, rows)
+                    print("Parsing content ...", end="\r")
+                    for index, chunk in get_chunk(reader, 100000):
+                        if index == 0:
+                            header = chunk.pop(0)
+                        rows = [x for x in chunk]
+
+                        create_objects(sensor_type, header, rows)
 
                 delete_sensor_data_files(file_name)
 
