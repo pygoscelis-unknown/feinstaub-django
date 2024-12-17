@@ -1,15 +1,8 @@
 from django.core.management import BaseCommand
 import os
-import csv
-from bs4 import BeautifulSoup
-import requests
-import urllib.request
-from datetime import date
-from datetime import timedelta
-import time
-from .modules.csv import get_header
 import json
 import textwrap
+
 
 class Command(BaseCommand):
     help = """
@@ -26,7 +19,6 @@ class Command(BaseCommand):
         json_file = kwargs['json']
         project_name = kwargs['project']
         app_name = kwargs['app']
-
 
         # --- GET HEADER DATA --- #
         with open(json_file) as f:
@@ -89,12 +81,10 @@ class Command(BaseCommand):
                 django.setup()
             """))
 
-
         # --- ITERATE OVER OBJECTS --- #
         index = 0
         for key, values in data.items():
             key = key.replace("-", "")
-
 
             with open(app_basefiles[0], "a") as pyf:
                 pyf.write(textwrap.dedent("""\
@@ -123,7 +113,6 @@ class Command(BaseCommand):
                         #
                             {} = models.FloatField(null=True, blank=True)
                         """).format(value))
-
 
             # --- IMPORT MODELS --- #
             with open(app_basefiles[1], "a") as pyf:
@@ -164,8 +153,6 @@ class Command(BaseCommand):
 
             index += 1
 
-
-
         # --- APP_MODELS.PY --- #
         with open(app_basefiles[0], "r") as pyf:
             lines = pyf.readlines()
@@ -175,11 +162,9 @@ class Command(BaseCommand):
                 if line.strip("\n") != "#":
                     pyf.write(line)
 
-
         # --- CREATE_OBJECT.PY --- #
         with open(app_commandfiles[0], "a") as pyf:
             pyf.write("def create(sensor_type, row):\n")
-
 
         # --- ITERATE OVER OBJECTS --- #
         index = 0
@@ -240,13 +225,11 @@ class Command(BaseCommand):
                         )
                 """))
 
-
             index += 1
 
-        # --- APP_URLS.PY --- 
+        # --- APP_URLS.PY --- #
         with open(app_basefiles[4], "a") as pyf:
             pyf.write("router = routers.DefaultRouter()\n")
-
 
         # --- ITERATE OVER OBJECTS --- #
         index = 0
@@ -278,11 +261,9 @@ class Command(BaseCommand):
                             return queryset
                 """.format(key.capitalize(), key.capitalize(), key)))
 
-
-            # --- APP_URLS.PY --- 
+            # --- APP_URLS.PY --- #
             with open(app_basefiles[4], "a") as pyf:
                 pyf.write("router.register(r'{}', {}ViewSet, basename='{}')\n".format(key, key.capitalize(), key))
-
 
         # --- CREATE_OBJECT.PY --- #
         with open(app_commandfiles[0], "a") as pyf:
@@ -299,7 +280,6 @@ class Command(BaseCommand):
                 if line.strip("\n") != "#":
                     pyf.write(line)
 
-
         # --- APP_URLS.PY --- #
         with open(app_basefiles[4], "a") as pyf:
             pyf.write(textwrap.dedent("""\
@@ -307,7 +287,6 @@ class Command(BaseCommand):
                     path('', include(router.urls)),
                 ]
             """))
-
 
         # --- PROJECT_URLS.PY --- #
         with open(project_filenames[0], "a") as pyf:
