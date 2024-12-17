@@ -41,33 +41,40 @@ class Command(BaseCommand):
             "p_urls.py"
         ]
 
-        with open(app_basefiles[0], "w") as pyf:
+        for files in [app_basefiles, app_commandfiles, project_filenames]:
+            for file in files:
+                with open(file, "w") as pyf:
+                    pyf.write(textwrap.dedent("""\
+                        #pylint: skip-file
+                    """))
+
+        with open(app_basefiles[0], "a") as pyf:
             pyf.write(textwrap.dedent("""\
                 from django.db import models
             """))
 
-        with open(app_basefiles[1], "w") as pyf:
+        with open(app_basefiles[1], "a") as pyf:
             pyf.write(textwrap.dedent("""\
                 from django.contrib import admin
             """))
 
-        with open(app_basefiles[2], "w") as pyf:
+        with open(app_basefiles[2], "a") as pyf:
             pyf.write(textwrap.dedent("""\
                 from rest_framework import serializers
             """))
 
-        with open(app_basefiles[3], "w") as pyf:
+        with open(app_basefiles[3], "a") as pyf:
             pyf.write(textwrap.dedent("""\
                 from rest_framework import viewsets
             """))
 
-        with open(app_basefiles[4], "w") as pyf:
+        with open(app_basefiles[4], "a") as pyf:
             pyf.write(textwrap.dedent("""\
                 from django.urls import path, include
                 from rest_framework import routers
             """))
 
-        with open(project_filenames[0], "w") as pyf:
+        with open(project_filenames[0], "a") as pyf:
             pyf.write(textwrap.dedent("""\
                 from django.contrib import admin
                 from django.urls import path, include
@@ -75,7 +82,7 @@ class Command(BaseCommand):
                 from rest_framework import routers, serializers, viewsets
             """))
 
-        with open(app_commandfiles[0], "w") as pyf:
+        with open(app_commandfiles[0], "a") as pyf:
             pyf.write(textwrap.dedent("""\
                 import django
                 django.setup()
