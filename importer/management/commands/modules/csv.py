@@ -1,6 +1,7 @@
 import csv
 import os
 import urllib.request
+from typing import Iterator, Generator
 
 
 def read_csv(url):
@@ -12,16 +13,16 @@ def read_csv(url):
 
 
 def get_header(url):
+    """
+    Return first row as header
+    """
     reader = read_csv(url)
 
     for row in reader:
-        header = row
-        break
-
-    return header
+        return row
 
 
-def get_chunk(reader: str, chunksize: int):
+def get_chunk(reader: Iterator[list[str]], chunksize: int) -> Generator[tuple[int, list[str]], None, None]:
     """
     Generates chunk to avoid OOM when a csv reader is too large to process at once
     """
