@@ -303,10 +303,10 @@ class Command(BaseCommand):
                 urlpatterns = [
                     path('admin/', admin.site.urls),
                     path('', include(router.urls)),
-                    path('{}/', include('{}.urls')),
+                    path('sensor/', include('{}.urls')),
                     path('api-auth/', include('rest_framework.urls', namespace='rest_framework'))
                 ]
-            """.format(app_name, app_name)))
+            """.format(app_name)))
 
         if os.path.exists("{}".format(app_name)):
             for filename in app_basefiles:
