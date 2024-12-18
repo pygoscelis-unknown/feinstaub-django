@@ -1,36 +1,41 @@
-from django.core.management import BaseCommand
-import csv
-import os
-
-from bs4 import BeautifulSoup
-import requests
-import urllib.request
-import zipfile
 import datetime
+import requests
+from bs4 import BeautifulSoup
+from django.core.management import BaseCommand
 from .modules.sensor_type import get_sensor_type
-from .modules.create_object import create
 from .modules.get_env_vars import get_sensor_archive_url
 
 
 class Command(BaseCommand):
+    """
+    Prints out all sensor types whose monthly data have been saved in zip format in following json files:
+    * PROJECT_ROOT/zip_filenames.json
+    * PROJECT_ROOT/sensor_types-zip.json
+    for more detail, visit http://archive.sensor.community/csv_per_month/
+    """
+
     help = """
-    Prints all sensor types whose data have been saved in csv_per_month-zip format into the following json files: ./zip_filenames.json and ./sensor_types-zip.json in project root - for more detail, visit http://archive.sensor.community/csv_per_month/
+    Prints out all sensor types with monthly data in following json files:
+    * PROJECT_ROOT/zip_filenames.json
+    * PROJECT_ROOT/sensor_types-zip.json
     """
 
     def handle(self, *args, **kwargs):
-
         url = get_sensor_archive_url() + "/csv_per_month/"
-        page = requests.get(url)
+        try:
+            page = requests.get(url)
+        except requests.RequestException as e:
+            raise SystemExit(e) from e
         soup = BeautifulSoup(page.content, "html.parser")
-        sensor_type_queue = dict()
+        sensor_type_queue = {}
 
         filenames = [
             "zip_filenames.json",
             "sensor_types-zip.json",
         ]
-        with open(filenames[0], "w") as pyf:
+        with open(filenames[0], "w", encoding="utf-8") as pyf:
             pyf.write("[\n")
-        with open(filenames[1], "w") as pyf:
+        with open(filenames[1], "w", encoding="utf-8") as pyf:
             pyf.write("[\n")
 
         sensor_type_queue = []
@@ -43,14 +48,17 @@ class Command(BaseCommand):
 
             try:
                 datetime.datetime.strptime(href, "%Y-%m")
-                page = requests.get(url + href + "/")
+                try:
+                    page = requests.get(url + href + "/")
+                except requests.RequestException as e:
+                    raise SystemExit(e) from e
                 soup = BeautifulSoup(page.content, "html.parser")
                 date = href
 
                 for a in soup.find_all("a", href=True):
                     if href in a["href"]:
                         sensor_type = get_sensor_type(a["href"], date, True)
-                        with open(filenames[0], "a") as pyf:
+                        with open(filenames[0], "a", encoding="utf-8") as pyf:
                             if index == 0:
                                 pyf.write('"' + a["href"] + '"')
                             else:
@@ -59,20 +67,20 @@ class Command(BaseCommand):
                         if sensor_type not in sensor_type_queue:
                             sensor_type_queue.append(sensor_type)
 
-                            with open(filenames[1], "a") as pyf:
+                            with open(filenames[1], "a", encoding="utf-8") as pyf:
                                 if index == 0:
                                     pyf.write('"' + sensor_type + '"')
                                     index += 1
                                 else:
                                     pyf.write(',\n"' + sensor_type + '"')
-                            print("register sensor type", sensor_type)
+                            print("register sensor type", sensor_type, end="\r")
                         else:
-                            print("sensor type already in queue, skip ...")
+                            print("sensor type already in queue, skip ...", end="\r")
 
             except ValueError:
                 continue
 
-        with open(filenames[0], "a") as pyf:
+        with open(filenames[0], "a", encoding="utf-8") as pyf:
             pyf.write("\n]")
-        with open(filenames[1], "a") as pyf:
+        with open(filenames[1], "a", encoding="utf-8") as pyf:
             pyf.write("\n]")
