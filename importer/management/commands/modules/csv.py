@@ -1,27 +1,35 @@
+"""
+CSV Handlers
+"""
+
 import csv
 import os
 import urllib.request
+from typing import Iterator, Generator
 
 
 def read_csv(url):
-    response = urllib.request.urlopen(url)
-    lines = [line.decode("utf-8") for line in response.readlines()]
+    """
+    Read csv
+    """
+    with urllib.request.urlopen(url) as response:
+        lines = [line.decode("utf-8") for line in response.readlines()]
     reader = csv.reader(lines, delimiter=";")
 
     return reader
 
 
 def get_header(url):
+    """
+    Return first row as header
+    """
     reader = read_csv(url)
 
     for row in reader:
-        header = row
-        break
-
-    return header
+        return row
 
 
-def get_chunk(reader: str, chunksize: int):
+def get_chunk(reader: Iterator[list[str]], chunksize: int) -> Generator[tuple[int, list[str]], None, None]:
     """
     Generates chunk to avoid OOM when a csv reader is too large to process at once
     """
@@ -42,9 +50,9 @@ def delete_sensor_data_files(file_name):
     """
     for f in [file_name + ".zip", file_name + ".csv"]:
         if os.path.exists(f):
-            print("Deleting file {} ...".format(f), end="\r")
+            print(f"Deleting file {f} ...", end="\r")
             os.remove(f)
             print(end="\x1b[2K")
-            print("File {} deleted.".format(f))
+            print(f"File {f} deleted.")
         else:
-            print("File {} does not exist, nothing to delete.".format(f))
+            print(f"File {f} does not exist, nothing to delete.")

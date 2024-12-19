@@ -1,7 +1,12 @@
-def get_sensor_type(a_href, date, isZip=False):
+"""
+Module: Sensor Type
+"""
+
+
+def get_sensor_type(a_href, date, is_zip=False) -> str:
     """
-    Get sensor type from a tag
-    Set isZip True when using for zipfile via csv_per_month
+    Gets sensor type from html <a> tag
+    Set is_zip True when using for zipfile via csv_per_month
     """
     tmp = a_href.split("_")
     sensor_type = None
@@ -13,15 +18,15 @@ def get_sensor_type(a_href, date, isZip=False):
             if tmp[i] == date:
                 date_index = i
 
-            if isZip:
-                if tmp[i] != date:
+            if is_zip:
+                if tmp[i] is not date:
                     sensor_index = i
             else:
                 if tmp[i] == "sensor":
                     sensor_index = i
 
-        if date_index != None and sensor_index != None:
-            if isZip:
+        if date_index is not None and sensor_index is not None:
+            if is_zip:
                 sensor_type = tmp[sensor_index].replace(".zip", "")
             else:
                 if sensor_index - date_index == 2:
@@ -30,4 +35,7 @@ def get_sensor_type(a_href, date, isZip=False):
                 else:
                     sensor_type = tmp[date_index + 1] + "_" + tmp[date_index + 2]
 
-    return sensor_type
+    if sensor_type is not None:
+        return sensor_type
+
+    raise ValueError("Cannot get sensor type.")

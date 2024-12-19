@@ -2,7 +2,12 @@ import datetime
 import math
 
 
-def main(sensor_type, header, row):
+def main(header: list[str], row: list) -> list:
+    """
+    Converts illegal values from row into None.
+    Returns row after conversion.
+    """
+
     # convert illegal values
     for i in range(len(row)):
         if header[i] != "sensor_type":

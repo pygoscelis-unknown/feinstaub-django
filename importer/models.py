@@ -1,3 +1,4 @@
+#pylint: skip-file
 from django.db import models
 class bme280(models.Model):
     sensor_id = models.IntegerField(null=True, blank=True)

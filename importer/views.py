@@ -1,3 +1,4 @@
+#pylint: skip-file
 from rest_framework import viewsets
 from .models import bme280, bmp180, bmp280, dht22, ds18b20, hpm, htu21d, laerm, nextpm, pms1003, pms3003, pms5003, pms6003, pms7003, ppd42ns, radiation_sbm19, radiation_sbm20, radiation_si22g, scd30, sds011, sen5x, sht10, sht11, sht15, sht30, sht31, sht35, sht85, sps30
 from .serializers import Bme280Serializer, Bmp180Serializer, Bmp280Serializer, Dht22Serializer, Ds18b20Serializer, HpmSerializer, Htu21dSerializer, LaermSerializer, NextpmSerializer, Pms1003Serializer, Pms3003Serializer, Pms5003Serializer, Pms6003Serializer, Pms7003Serializer, Ppd42nsSerializer, Radiation_sbm19Serializer, Radiation_sbm20Serializer, Radiation_si22gSerializer, Scd30Serializer, Sds011Serializer, Sen5xSerializer, Sht10Serializer, Sht11Serializer, Sht15Serializer, Sht30Serializer, Sht31Serializer, Sht35Serializer, Sht85Serializer, Sps30Serializer

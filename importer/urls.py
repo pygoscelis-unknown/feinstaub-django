@@ -1,3 +1,4 @@
+#pylint: skip-file
 from django.urls import path, include
 from rest_framework import routers
 from .views import Bme280ViewSet, Bmp180ViewSet, Bmp280ViewSet, Dht22ViewSet, Ds18b20ViewSet, HpmViewSet, Htu21dViewSet, LaermViewSet, NextpmViewSet, Pms1003ViewSet, Pms3003ViewSet, Pms5003ViewSet, Pms6003ViewSet, Pms7003ViewSet, Ppd42nsViewSet, Radiation_sbm19ViewSet, Radiation_sbm20ViewSet, Radiation_si22gViewSet, Scd30ViewSet, Sds011ViewSet, Sen5xViewSet, Sht10ViewSet, Sht11ViewSet, Sht15ViewSet, Sht30ViewSet, Sht31ViewSet, Sht35ViewSet, Sht85ViewSet, Sps30ViewSet

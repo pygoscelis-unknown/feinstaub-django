@@ -1,23 +1,24 @@
-from django.core.management import BaseCommand
-import csv
+import json
 from bs4 import BeautifulSoup
-import requests
-import urllib.request
-from datetime import date
-from datetime import timedelta
-import time
+from django.core.management import BaseCommand
 from .modules.csv import get_header
 from .modules.sensor_type import get_sensor_type
-import json
 from .modules.get_env_vars import get_sensor_archive_url
+from .modules import requests
 
 
 def register(dictionary, key, url):
-    print("sensor type not in queue: register sensor type", key, end="\r")
+    """
+    Registers sensor type and prints register message
+    """
     dictionary[key] = get_header(url)
+    print("sensor type not in queue: register sensor type", key, end="\r")
 
 
 def skip(key):
+    """
+    Just prints skip message
+    """
     print("sensor type", key, "already in queue: skip...", end="\r")
 
 
@@ -45,24 +46,26 @@ class Command(BaseCommand):
         print("scanning page ...", end="\r")
         print(end="\x1b[2K")
         soup = BeautifulSoup(page.content, "html.parser")
-        sensor_type_queue = dict()
+        sensor_type_queue = {}
 
         for a in soup.find_all("a", href=True):
-            sensor_type = get_sensor_type(a["href"], date)
+            try:
+                sensor_type = get_sensor_type(a["href"], date)
+            except ValueError:
+                continue
 
-            if sensor_type != None:
-                url = base_url + "/" + a["href"]
+            url = base_url + "/" + a["href"]
 
-                if len(sensor_type_queue) == 0:
+            if len(sensor_type_queue) == 0:
+                register(sensor_type_queue, sensor_type, url)
+            else:
+                if sensor_type not in sensor_type_queue:
                     register(sensor_type_queue, sensor_type, url)
                 else:
-                    if sensor_type not in sensor_type_queue.keys():
-                        register(sensor_type_queue, sensor_type, url)
-                    else:
-                        skip(sensor_type)
+                    skip(sensor_type)
 
         print(end="\x1b[2K")
         print("writing file ...")
-        with open("sensor_csv_header.json", "w") as file:
+        with open("sensor_csv_header.json", "w", encoding="utf-8") as file:
             file.write(json.dumps(sensor_type_queue))
         print("see in root path: ./sensor_csv_header.json")

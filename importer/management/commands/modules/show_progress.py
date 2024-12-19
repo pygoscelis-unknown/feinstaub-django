@@ -1,17 +1,24 @@
+"""
+Progress Bar Handlers
+"""
+
 import progressbar
 
-pbar = None
+PBAR = None
 
 
-def show_download_progress(blockNum, readSize, totalSize):
-    global pbar
-    if pbar is None:
-        pbar = progressbar.ProgressBar(maxval=totalSize)
-        pbar.start()
+def show_download_progress(block_num, read_size, total_size):
+    """
+    Show progress bar for download.
+    """
+    global PBAR
+    if PBAR is None:
+        PBAR = progressbar.ProgressBar(maxval=total_size)
+        PBAR.start()
 
-    downloaded = blockNum * readSize
-    if downloaded < totalSize:
-        pbar.update(downloaded)
+    downloaded = block_num * read_size
+    if downloaded < total_size:
+        PBAR.update(downloaded)
     else:
-        pbar.finish()
-        pbar = None
+        PBAR.finish()
+        PBAR = None
