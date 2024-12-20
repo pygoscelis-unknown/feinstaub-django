@@ -27,28 +27,47 @@
 ### Prerequisites
 - Python 3
 ```bash
-python --version
+python3 --version
 ```
 
 ### Installation
 
 #### Clone repository
 ```bash
-git clone https://github.com/pygoscelis-unknown/django-feinstaub.git
-```
-```bash
-cd django-feinstaub
+git clone https://github.com/pygoscelis-unknown/feinstaub-django.git
+cd feinstaub-django
 ```
 
 #### Install dependencies
 ```bash
-pip install -r requirements.txt
+pip3 install -r requirements.txt
 ```
 
 #### Add environment variables
-- copy .env.example to .env and set your database data
-- add your own secret key
-
+- copy .env.example to .env and set your database
+    ```
+    DB_ENGINE=<DATABASE_ENGINE>
+    POSTGRES_DB=<DATABASE_NAME>
+    POSTGRES_USER=<DATABASE_USER>
+    POSTGRES_PASSWORD=<DATABASE_PASSWORD>
+    DB_HOST=<DATABASE_HOST> # set in docker-compose.yaml when using docker
+    DB_PORT=<DATABASE_PORT>
+    
+    DJANGO_SECRET_KEY=<DJANGO_SECRET_KEY>
+    DJANGO_PROJECT_NAME="feinstaub"
+    DJANGO_APP_NAME="importer"
+    
+    SENSOR_ARCHIVE_URL="http://archive.sensor.community"
+    ```
+- add your own secret key - you can generate a secret key with the following command:
+    ```bash
+    django-admin shell
+    ```
+    then in python shell:
+    ```python
+    from django.core.management.utils import get_random_secret_key
+    get_random_secret_key()
+    ```
 
 ## Usage
 ### Start the development server
@@ -56,61 +75,57 @@ pip install -r requirements.txt
 python manage.py runserver
 ```
 
-### Apply migrations
-```bash
-python manage.py migrate
-```
-
 ### Get data header from csv files
 ```bash
 python manage.py get_csv_header --date <YYYY-MM-DD>
 ```
-This script generates in your project root sensor_csv_header.json with all sensor types on target link and all header data of each sensor type. The date of the most recent csv file should be used.
+This script generates `./sensor_csv_header.json`.
 
 ### Generate base files for your app
 ```bash
-python manage.py generate_base_files --json <PROJECT_ROOT>/sensor_csv_header.json --project <PROJECT_NAME> --app <APP_NAME>
+python manage.py generate_base_files --json ./sensor_csv_header.json
 ```
-This scripts generate the following files:
+This script generates the following files:
 - models.py
 - admin.py
 - serializers.py
 - views.py
 - urls.py
 
-    in `<APP_ROOT>/`
+    in `./importer`
 
 - create_object.py
 
-    in `<APP_ROOT>/management/commands/modules/`
+    in `./importer/management/commands/modules`
 
 - urls.py
 
-    in `<PROJECT_ROOT>/`
+    in `./feinstaub`
+
+### Apply migrations
+```bash
+python manage.py makemigrations
+python manage.py migrate
+```
 
 ### Import data from csv files to database
-to get data of all sensor types available in zip format for one month from zipped csv files
 ```bash
-python manage.py import_data-zip-all-multiprocessing --year <YYYY> --month <MM> --app <APP_NAME>
+python manage.py import_data
 ```
-to get data of a specific sensor type available in zip format for one month from zipped csv files
-```bash
-python manage.py import_data-zip-mono-multiprocessing --year <YYYY> --month <MM> --type <SENSOR_TYPE>
-```
-Other available commands are to find in `<APP_ROOT>/management/commands/`.
+All other commands can be found in `./importer/management/commands`.
 
 ## Configuration
 
 ## Deployment
 
 ## Further information
-This project uses DRF (Django Rest Framework) for the REST API. 
+This project uses Django Rest Framework for the REST API.
 
 ## Contributing
 
 ## License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) for details.
 
 ## Acknowledgments
 
