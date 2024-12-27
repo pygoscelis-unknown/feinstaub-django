@@ -15,14 +15,14 @@ def validate_date(date: str, with_day=False):
     if with_day:
         try:
             datetime.date.fromisoformat(date)
-        except ValueError:
-            raise ValueError("Invalid data format, check the format is YYYY-MM-DD and the date is not out of range.")
+        except ValueError as e:
+            raise ValueError("Invalid data format, check the format is YYYY-MM-DD and the date is not out of range.") from e
 
     else:
         try:
             datetime.datetime.strptime(date, "%Y-%m")
-        except ValueError:
-            raise ValueError("Invalid data format, check the format is YYYY-MM and the date is not out of range.")
+        except ValueError as e:
+            raise ValueError("Invalid data format, check the format is YYYY-MM and the date is not out of range.") from e
 
 
 def validate_url(func):
