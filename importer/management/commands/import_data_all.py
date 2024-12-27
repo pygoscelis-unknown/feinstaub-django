@@ -8,6 +8,7 @@ from .modules.create_object import create
 from .modules.get_env_vars import get_sensor_archive_url
 from .modules.convert_values import main as convert_values
 from .modules import requests
+from .modules.validators import validate_date
 
 
 class Command(BaseCommand):
@@ -28,6 +29,7 @@ class Command(BaseCommand):
 
         website = get_sensor_archive_url()
         date = kwargs["date"]
+        validate_date(date, True)
         base_url = website + "/" + date
         page = requests.get(base_url)
         soup = BeautifulSoup(page.content, "html.parser")

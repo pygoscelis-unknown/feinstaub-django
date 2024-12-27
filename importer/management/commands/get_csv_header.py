@@ -1,10 +1,12 @@
 import json
+import datetime
 from bs4 import BeautifulSoup
 from django.core.management import BaseCommand
 from .modules.csv import get_header
 from .modules.sensor_type import get_sensor_type
 from .modules.get_env_vars import get_sensor_archive_url
 from .modules import requests
+from .modules.validators import validate_date
 
 
 def register(dictionary, key, url):
@@ -39,6 +41,7 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
         website = get_sensor_archive_url()
         date = kwargs["date"]
+        validate_date(date, True)
 
         base_url = website + "/" + date + "/"
         page = requests.get(base_url)

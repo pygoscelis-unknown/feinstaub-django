@@ -13,6 +13,7 @@ from .modules.multiprocessing import main as create_objects
 from .modules.get_env_vars import get_sensor_archive_url
 from .modules.csv import get_chunk, delete_sensor_data_files
 from .modules.show_progress import show_download_progress
+from .modules.validators import validate_date
 
 
 class Command(BaseCommand):
@@ -26,8 +27,7 @@ class Command(BaseCommand):
     """
 
     def add_arguments(self, parser):
-        parser.add_argument("--year", type=str, help="Format: YYYY")
-        parser.add_argument("--month", type=str, help="Format: MM")
+        parser.add_argument("--date", type=str, help="Format: YYYY-MM")
         parser.add_argument(
             "--type", type=str, help="The name of the target sensor type"
         )
@@ -35,7 +35,8 @@ class Command(BaseCommand):
     def handle(self, *args, **kwargs):
 
         base_url = get_sensor_archive_url()
-        date = kwargs["year"] + "-" + kwargs["month"]
+        date = kwargs["date"]
+        validate_date(date)
         sensor_type = kwargs["type"]
         url = (
             base_url

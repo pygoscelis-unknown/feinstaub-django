@@ -14,6 +14,7 @@ from .modules.multiprocessing import main as create_objects
 from .modules.get_env_vars import get_sensor_archive_url
 from .modules.csv import get_chunk, delete_sensor_data_files
 from .modules.show_progress import show_download_progress
+from .modules.validators import validate_date
 
 
 class Command(BaseCommand):
@@ -28,21 +29,17 @@ class Command(BaseCommand):
     """
 
     def add_arguments(self, parser):
-        parser.add_argument("--year", type=str, help="Format: YYYY")
-        parser.add_argument("--month", type=str, help="Format: MM")
-        parser.add_argument("--app", type=str, help="Your django app name")
+        parser.add_argument("--date", type=str, help="Format: YYYY-MM")
 
     def handle(self, *args, **kwargs):
 
         base_url = get_sensor_archive_url()
-        year = kwargs["year"]
-        month = kwargs["month"]
-        app = kwargs["app"]
-        date = year + "-" + month
+        date = kwargs["date"]
+        validate_date(date)
 
         # get all sensor types
         sensor_types = []
-        for m in apps.get_app_config(app).get_models():
+        for m in apps.get_app_config("importer").get_models():
             sensor_types.append(m.__name__)
 
         start = time.time()

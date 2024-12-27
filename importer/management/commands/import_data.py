@@ -15,6 +15,7 @@ import zipfile
 import inquirer
 from django.core.management import BaseCommand
 from django.apps import apps
+from .modules.validators import validate_date
 from .modules.multiprocessing import main as create_objects
 from .modules.get_env_vars import get_sensor_archive_url
 from .modules.csv import get_chunk, delete_sensor_data_files
@@ -94,8 +95,6 @@ class Command(BaseCommand):
 
         if kwargs["year"] is not None:
             year = kwargs["year"]
-            if year not in years:
-                raise ValueError("Invalid year or out of range")
         else:
             qs = [
                 inquirer.List(
@@ -110,8 +109,6 @@ class Command(BaseCommand):
 
         if kwargs["month"] is not None:
             month = kwargs["month"]
-            if month not in months:
-                raise ValueError("Invalid month or out of range")
         else:
             qs = [
                 inquirer.List(
@@ -125,6 +122,7 @@ class Command(BaseCommand):
             month = i["month"]
 
         date = year + "-" + month
+        validate_date(date)
 
         if kwargs["all"]:
             import_all = True
