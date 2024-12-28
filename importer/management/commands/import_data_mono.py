@@ -1,8 +1,8 @@
-import csv
 import time
-import urllib.request
+import datetime
 from bs4 import BeautifulSoup
 from django.core.management import BaseCommand
+from .modules.csv import read_csv
 from .modules.sensor_type import get_sensor_type
 from .modules.create_object import create
 from .modules.get_env_vars import get_sensor_archive_url
@@ -32,8 +32,18 @@ class Command(BaseCommand):
         website = get_sensor_archive_url()
         date = kwargs["date"]
         validate_date(date, True)
+
+        current_year = datetime.datetime.now().year
+        arg_year = datetime.datetime.fromisoformat(date).year
+        year_path = ""
+        is_gz = False
+
+        if arg_year < current_year - 1:
+            year_path = f"{arg_year}/"
+            is_gz = True
+
         inserted_sensor_type = kwargs["type"]
-        base_url = website + "/" + date
+        base_url = f"{website}/{year_path}{date}"
         page = requests.get(base_url)
         soup = BeautifulSoup(page.content, "html.parser")
 
@@ -48,12 +58,10 @@ class Command(BaseCommand):
 
                 sensor_type = sensor_type.replace("-", "")
                 if sensor_type is not None and inserted_sensor_type == sensor_type:
-                    url = base_url + "/" + i["href"]
+                    url = f"{base_url}/{i['href']}"
                     print("Importing from:", url)
 
-                    with urllib.request.urlopen(url) as response:
-                        lines = [line.decode("utf-8") for line in response.readlines()]
-                    reader = csv.reader(lines, delimiter=";")
+                    reader = read_csv(url, is_gz)
 
                     index = 0
                     header = []
