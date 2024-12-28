@@ -4,32 +4,47 @@ CSV Handlers
 
 import csv
 import os
+import gzip
+from pathlib import Path
 import urllib.request
 from typing import Iterator, Generator
 
 
-def read_csv(url):
+def read_csv(url: str, is_gz=False):
     """
     Read csv
     """
-    with urllib.request.urlopen(url) as response:
-        lines = [line.decode("utf-8") for line in response.readlines()]
-    reader = csv.reader(lines, delimiter=";")
+    if is_gz:
+        filename = os.path.basename(url)
+        urllib.request.urlretrieve(url, filename)
+        with gzip.open(filename) as f:
+            lines = [line.decode("utf-8") for line in f.readlines()]
+        reader = csv.reader(lines, delimiter=";")
+
+        filename = Path(filename).stem
+        delete_sensor_data_files(filename)
+
+    else:
+        with urllib.request.urlopen(url) as response:
+            lines = [line.decode("utf-8") for line in response.readlines()]
+        reader = csv.reader(lines, delimiter=";")
 
     return reader
 
 
-def get_header(url):
+def get_header(url: str, is_gz=False):
     """
     Return first row as header
     """
-    reader = read_csv(url)
+    reader = read_csv(url, is_gz)
 
     for row in reader:
         return row
 
 
-def get_chunk(reader: Iterator[list[str]], chunksize: int) -> Generator[tuple[int, list[str]], None, None]:
+def get_chunk(
+    reader: Iterator[list[str]], chunksize: int
+) -> Generator[tuple[int, list[str]], None, None]:
     """
     Generates chunk to avoid OOM when a csv reader is too large to process at once
     """
@@ -46,13 +61,11 @@ def get_chunk(reader: Iterator[list[str]], chunksize: int) -> Generator[tuple[in
 
 def delete_sensor_data_files(file_name):
     """
-    Delete csv/zip
+    Delete csv/zip/gz
     """
-    for f in [file_name + ".zip", file_name + ".csv"]:
+    for f in [file_name + ".zip", file_name + ".csv", file_name + ".gz"]:
         if os.path.exists(f):
             print(f"Deleting file {f} ...", end="\r")
             os.remove(f)
             print(end="\x1b[2K")
             print(f"File {f} deleted.")
-        else:
-            print(f"File {f} does not exist, nothing to delete.")

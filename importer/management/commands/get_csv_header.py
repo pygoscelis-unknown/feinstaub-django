@@ -9,19 +9,19 @@ from .modules import requests
 from .modules.validators import validate_date
 
 
-def register(dictionary, key, url):
+def register(dictionary: dict, key: str, url: str, is_gz: bool):
     """
     Registers sensor type and prints register message
     """
-    dictionary[key] = get_header(url)
-    print("sensor type not in queue: register sensor type", key, end="\r")
+    dictionary[key] = get_header(url, is_gz)
+    print("Sensor type not in queue: Register sensor type", key, end="\r")
 
 
-def skip(key):
+def skip(key: str):
     """
     Just prints skip message
     """
-    print("sensor type", key, "already in queue: skip...", end="\r")
+    print("Sensor type", key, "already in queue: Skip...", end="\r")
 
 
 class Command(BaseCommand):
@@ -43,10 +43,19 @@ class Command(BaseCommand):
         date = kwargs["date"]
         validate_date(date, True)
 
-        base_url = website + "/" + date + "/"
+        current_year = datetime.datetime.now().year
+        arg_year = datetime.datetime.fromisoformat(date).year
+        year_path = ""
+        is_gz = False
+
+        if arg_year < current_year - 1:
+            year_path = f"{arg_year}/"
+            is_gz = True
+
+        base_url = f"{website}/{year_path}{date}/"
         page = requests.get(base_url)
 
-        print("scanning page ...", end="\r")
+        print("Scanning page ...", end="\r")
         print(end="\x1b[2K")
         soup = BeautifulSoup(page.content, "html.parser")
         sensor_type_queue = {}
@@ -60,15 +69,15 @@ class Command(BaseCommand):
             url = base_url + "/" + a["href"]
 
             if len(sensor_type_queue) == 0:
-                register(sensor_type_queue, sensor_type, url)
+                register(sensor_type_queue, sensor_type, url, is_gz)
             else:
                 if sensor_type not in sensor_type_queue:
-                    register(sensor_type_queue, sensor_type, url)
+                    register(sensor_type_queue, sensor_type, url, is_gz)
                 else:
                     skip(sensor_type)
 
         print(end="\x1b[2K")
-        print("writing file ...")
+        print("Writing file ...")
         with open("sensor_csv_header.json", "w", encoding="utf-8") as file:
             file.write(json.dumps(sensor_type_queue))
-        print("see in root path: ./sensor_csv_header.json")
+        print("See in root path: ./sensor_csv_header.json")

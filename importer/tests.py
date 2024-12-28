@@ -15,9 +15,9 @@ def get_hash(filename: str):
 
 class CsvHeaderTest(TestCase):
     def test_command_output(self):
-        call_command("get_csv_header", date="2022-12-01")
+        call_command("get_csv_header", date="2022-01-01")
         csv_header_hash = get_hash(os.path.join(BASE_DIR, "sensor_csv_header.json"))
-        test_hash = "c524a14a94b7d9620b586fa10a166b77"
+        test_hash = "0d741ef0cf2672e7f890fe4e8056eb8d"
 
         self.assertEqual(csv_header_hash, test_hash)
 
