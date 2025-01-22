@@ -1,6 +1,6 @@
 #pylint: skip-file
 from django.contrib import admin
-from .models import bme280, bmp180, bmp280, dht22, ds18b20, hpm, htu21d, laerm, nextpm, pms1003, pms3003, pms5003, pms6003, pms7003, ppd42ns, radiation_sbm19, radiation_sbm20, radiation_si22g, scd30, sds011, sen5x, sht10, sht11, sht15, sht30, sht31, sht35, sht85, sps30
+from .models import bme280, bmp180, bmp280, dht22, ds18b20, hpm, htu21d, laerm, pms1003, pms3003, pms5003, pms6003, pms7003, ppd42ns, radiation_sbm19, radiation_sbm20, radiation_si22g, scd30, sds011, sen5x, sht10, sht11, sht15, sht30, sht31, sht35, sps30
 admin.site.register(bme280)
 admin.site.register(bmp180)
 admin.site.register(bmp280)
@@ -9,7 +9,6 @@ admin.site.register(ds18b20)
 admin.site.register(hpm)
 admin.site.register(htu21d)
 admin.site.register(laerm)
-admin.site.register(nextpm)
 admin.site.register(pms1003)
 admin.site.register(pms3003)
 admin.site.register(pms5003)
@@ -28,5 +27,4 @@ admin.site.register(sht15)
 admin.site.register(sht30)
 admin.site.register(sht31)
 admin.site.register(sht35)
-admin.site.register(sht85)
 admin.site.register(sps30)

@@ -259,6 +259,12 @@ class Command(BaseCommand):
                             queried_location = self.request.query_params.get("location")
                             if queried_location is not None:
                                 queryset = queryset.filter(location=queried_location)
+                            queried_lat = self.request.query_params.get("lat")
+                            if queried_lat is not None:
+                                queryset = queryset.filter(lat=queried_lat)
+                            queried_lon = self.request.query_params.get("lon")
+                            if queried_lon is not None:
+                                queryset = queryset.filter(lon=queried_lon)
                             queried_year = self.request.query_params.get("year")
                             if queried_year is not None:
                                 queryset = queryset.filter(timestamp__year=queried_year)
@@ -268,6 +274,9 @@ class Command(BaseCommand):
                             queried_day = self.request.query_params.get("day")
                             if queried_day is not None:
                                 queryset = queryset.filter(timestamp__day=queried_day)
+                            queried_hour = self.request.query_params.get("hour")
+                            if queried_hour is not None:
+                                queryset = queryset.filter(timestamp__hour=queried_hour)
                             return queryset
                 """))
 

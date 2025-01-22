@@ -1,6 +1,6 @@
 #pylint: skip-file
 from rest_framework import serializers
-from .models import bme280, bmp180, bmp280, dht22, ds18b20, hpm, htu21d, laerm, nextpm, pms1003, pms3003, pms5003, pms6003, pms7003, ppd42ns, radiation_sbm19, radiation_sbm20, radiation_si22g, scd30, sds011, sen5x, sht10, sht11, sht15, sht30, sht31, sht35, sht85, sps30
+from .models import bme280, bmp180, bmp280, dht22, ds18b20, hpm, htu21d, laerm, pms1003, pms3003, pms5003, pms6003, pms7003, ppd42ns, radiation_sbm19, radiation_sbm20, radiation_si22g, scd30, sds011, sen5x, sht10, sht11, sht15, sht30, sht31, sht35, sps30
 class Bme280Serializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = bme280
@@ -32,10 +32,6 @@ class Htu21dSerializer(serializers.HyperlinkedModelSerializer):
 class LaermSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = laerm
-        fields = "__all__"
-class NextpmSerializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = nextpm
         fields = "__all__"
 class Pms1003Serializer(serializers.HyperlinkedModelSerializer):
     class Meta:
@@ -108,10 +104,6 @@ class Sht31Serializer(serializers.HyperlinkedModelSerializer):
 class Sht35Serializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = sht35
-        fields = "__all__"
-class Sht85Serializer(serializers.HyperlinkedModelSerializer):
-    class Meta:
-        model = sht85
         fields = "__all__"
 class Sps30Serializer(serializers.HyperlinkedModelSerializer):
     class Meta:

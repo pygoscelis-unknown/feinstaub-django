@@ -1,7 +1,7 @@
 #pylint: skip-file
 import django
 django.setup()
-from importer.models import bme280, bmp180, bmp280, dht22, ds18b20, hpm, htu21d, laerm, nextpm, pms1003, pms3003, pms5003, pms6003, pms7003, ppd42ns, radiation_sbm19, radiation_sbm20, radiation_si22g, scd30, sds011, sen5x, sht10, sht11, sht15, sht30, sht31, sht35, sht85, sps30
+from importer.models import bme280, bmp180, bmp280, dht22, ds18b20, hpm, htu21d, laerm, pms1003, pms3003, pms5003, pms6003, pms7003, ppd42ns, radiation_sbm19, radiation_sbm20, radiation_si22g, scd30, sds011, sen5x, sht10, sht11, sht15, sht30, sht31, sht35, sps30
 def create(sensor_type, row):
     if sensor_type == "bme280":
         command = bme280.objects.create(
@@ -99,21 +99,6 @@ def create(sensor_type, row):
         noise_LA_max=row[8],
         noise_LA01=row[9],
         noise_LA95=row[10],
-        )
-    if sensor_type == "nextpm":
-        command = nextpm.objects.create(
-        sensor_id=row[0],
-        sensor_type=row[1],
-        location=row[2],
-        lat=row[3],
-        lon=row[4],
-        timestamp=row[5],
-        P1=row[6],
-        P2=row[7],
-        P0=row[8],
-        N1=row[9],
-        N25=row[10],
-        N10=row[11],
         )
     if sensor_type == "pms1003":
         command = pms1003.objects.create(
@@ -337,17 +322,6 @@ def create(sensor_type, row):
         )
     if sensor_type == "sht35":
         command = sht35.objects.create(
-        sensor_id=row[0],
-        sensor_type=row[1],
-        location=row[2],
-        lat=row[3],
-        lon=row[4],
-        timestamp=row[5],
-        temperature=row[6],
-        humidity=row[7],
-        )
-    if sensor_type == "sht85":
-        command = sht85.objects.create(
         sensor_id=row[0],
         sensor_type=row[1],
         location=row[2],
