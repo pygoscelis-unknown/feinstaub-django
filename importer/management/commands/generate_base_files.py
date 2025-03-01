@@ -16,11 +16,11 @@ class Command(BaseCommand):
     """
 
     def add_arguments(self, parser):
-        parser.add_argument('--json', type=str, help="Path to header json file")
+        parser.add_argument('--ziponly', action="store_true", help="Generate only files for sensor types with monthly zips")
 
     def handle(self, *args, **kwargs):
         load_dotenv()
-        json_file = kwargs['json']
+        json_file = "./sensor_csv_header.json"
         project_name = os.environ.get("DJANGO_PROJECT_NAME")
         app_name = os.environ.get("DJANGO_APP_NAME")
 
