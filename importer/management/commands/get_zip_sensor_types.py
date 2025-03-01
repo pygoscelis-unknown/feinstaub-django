@@ -74,9 +74,9 @@ class Command(BaseCommand):
                                 index += 1
                             else:
                                 pyf.write(',\n"' + sensor_type + '"')
-                        print("register sensor type", sensor_type, end="\r")
+                        print(f"Registering sensor type: {sensor_type}")
                     else:
-                        print("sensor type already in queue, skip ...", end="\r")
+                        print("Scanning ...", end="\r")
 
         with open(filenames[0], "a", encoding="utf-8") as pyf:
             pyf.write("\n]")
