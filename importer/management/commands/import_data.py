@@ -153,7 +153,10 @@ class Command(BaseCommand):
 
         if import_all:
             for sensor_type in sensor_types:
-                import_monthly_data(date, sensor_type)
+                try:
+                    import_monthly_data(date, sensor_type)
+                except Exception:
+                    continue
             sys.exit(0)
 
         else:
