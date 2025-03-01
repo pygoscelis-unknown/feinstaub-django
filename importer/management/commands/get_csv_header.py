@@ -26,9 +26,9 @@ def skip(key: str):
 
 class Command(BaseCommand):
     help = """
-    Gets header from a csv file.
-    The date of the most recent csv file should be inserted as date arg to update header constantly.
-    Check if the csv file of the date is already existing on archive before executing.
+    Get the header from a CSV file.
+    The date of the most recent CSV file should be used as the date argument to constantly update the header.
+    Before executing, check if the CSV file for that date already exists in the archive.
     """
 
     def add_arguments(self, parser):
@@ -67,6 +67,9 @@ class Command(BaseCommand):
                 continue
 
             url = base_url + "/" + a["href"]
+
+            # Remove hyphens from sensor_type
+            sensor_type = sensor_type.replace("-", "")
 
             if len(sensor_type_queue) == 0:
                 register(sensor_type_queue, sensor_type, url, is_gz)

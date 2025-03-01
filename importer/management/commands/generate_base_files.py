@@ -16,17 +16,31 @@ class Command(BaseCommand):
     """
 
     def add_arguments(self, parser):
-        parser.add_argument('--json', type=str, help="Path to header json file")
+        parser.add_argument('-z', '--ziponly', action="store_true", help="Generate only files for sensor types with monthly zips")
 
     def handle(self, *args, **kwargs):
         load_dotenv()
-        json_file = kwargs['json']
+        zip_only = kwargs["ziponly"]
         project_name = os.environ.get("DJANGO_PROJECT_NAME")
         app_name = os.environ.get("DJANGO_APP_NAME")
 
         # --- GET HEADER DATA --- #
-        with open(json_file, encoding="utf-8") as f:
+        with open("./sensor_csv_header.json", encoding="utf-8") as f:
             data = json.load(f)
+
+        if zip_only:
+            # Remove all entries of sensor types that do not have monthly zips
+            sensor_types = []
+            for key in data:
+                sensor_types.append(key)
+            with open("./sensor_types-zip.json", encoding="utf-8") as f:
+                sensor_types_with_zip = json.load(f)
+            sensor_types_to_remove = []
+            for s in sensor_types:
+                if s not in sensor_types_with_zip:
+                    sensor_types_to_remove.append(s)
+            for s in sensor_types_to_remove:
+                data.pop(s)
 
         # --- INIT FILES --- #
         app_basefiles = [
@@ -95,8 +109,6 @@ class Command(BaseCommand):
         # --- ITERATE OVER OBJECTS --- #
         index = 0
         for key, values in data.items():
-            key = key.replace("-", "")
-
             with open(app_basefiles[0], "a", encoding="utf-8") as pyf:
                 pyf.write(textwrap.dedent(f"""\
                     class {key}(models.Model):
@@ -179,8 +191,6 @@ class Command(BaseCommand):
         # --- ITERATE OVER OBJECTS --- #
         index = 0
         for key, values in data.items():
-            key = key.replace("-", "")
-
             # --- APP_ADMIN.PY --- #
             with open(app_basefiles[1], "a", encoding="utf-8") as pyf:
                 pyf.write(f"admin.site.register({key})\n")
@@ -244,8 +254,6 @@ class Command(BaseCommand):
         # --- ITERATE OVER OBJECTS --- #
         index = 0
         for key, values in data.items():
-            key = key.replace("-", "")
-
             # --- APP_VIEWS.PY --- #
             with open(app_basefiles[3], "a", encoding="utf-8") as pyf:
                 pyf.write(textwrap.dedent(f"""\
