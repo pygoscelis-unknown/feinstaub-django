@@ -32,13 +32,9 @@ DEBUG = True
 ALLOWED_HOSTS = [
     "localhost",
     "127.0.0.1",
-    "t530",
-    "django-feinstaub.onrender.com"
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'http://localhost',
-    'http://t530'
 ]
 
 
