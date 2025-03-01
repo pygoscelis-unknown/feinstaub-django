@@ -20,15 +20,27 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         load_dotenv()
-        json_file = "./sensor_csv_header.json"
         zip_only = kwargs["ziponly"]
         project_name = os.environ.get("DJANGO_PROJECT_NAME")
         app_name = os.environ.get("DJANGO_APP_NAME")
 
         # --- GET HEADER DATA --- #
-        with open(json_file, encoding="utf-8") as f:
+        with open("./sensor_csv_header.json", encoding="utf-8") as f:
             data = json.load(f)
-        print(f"zip only: {zip_only}")
+
+        if zip_only:
+            # Remove all entries of sensor types that do not have monthly zips
+            sensor_types = []
+            for key in data:
+                sensor_types.append(key)
+            with open("./sensor_types-zip.json", encoding="utf-8") as f:
+                sensor_types_with_zip = json.load(f)
+            sensor_types_to_remove = []
+            for s in sensor_types:
+                if s not in sensor_types_with_zip:
+                    sensor_types_to_remove.append(s)
+            for s in sensor_types_to_remove:
+                data.pop(s)
 
         # --- INIT FILES --- #
         app_basefiles = [
