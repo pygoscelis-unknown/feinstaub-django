@@ -16,17 +16,19 @@ class Command(BaseCommand):
     """
 
     def add_arguments(self, parser):
-        parser.add_argument('--ziponly', action="store_true", help="Generate only files for sensor types with monthly zips")
+        parser.add_argument('-z', '--ziponly', action="store_true", help="Generate only files for sensor types with monthly zips")
 
     def handle(self, *args, **kwargs):
         load_dotenv()
         json_file = "./sensor_csv_header.json"
+        zip_only = kwargs["ziponly"]
         project_name = os.environ.get("DJANGO_PROJECT_NAME")
         app_name = os.environ.get("DJANGO_APP_NAME")
 
         # --- GET HEADER DATA --- #
         with open(json_file, encoding="utf-8") as f:
             data = json.load(f)
+        print(f"zip only: {zip_only}")
 
         # --- INIT FILES --- #
         app_basefiles = [
@@ -95,8 +97,6 @@ class Command(BaseCommand):
         # --- ITERATE OVER OBJECTS --- #
         index = 0
         for key, values in data.items():
-            key = key.replace("-", "")
-
             with open(app_basefiles[0], "a", encoding="utf-8") as pyf:
                 pyf.write(textwrap.dedent(f"""\
                     class {key}(models.Model):
@@ -179,8 +179,6 @@ class Command(BaseCommand):
         # --- ITERATE OVER OBJECTS --- #
         index = 0
         for key, values in data.items():
-            key = key.replace("-", "")
-
             # --- APP_ADMIN.PY --- #
             with open(app_basefiles[1], "a", encoding="utf-8") as pyf:
                 pyf.write(f"admin.site.register({key})\n")
@@ -244,8 +242,6 @@ class Command(BaseCommand):
         # --- ITERATE OVER OBJECTS --- #
         index = 0
         for key, values in data.items():
-            key = key.replace("-", "")
-
             # --- APP_VIEWS.PY --- #
             with open(app_basefiles[3], "a", encoding="utf-8") as pyf:
                 pyf.write(textwrap.dedent(f"""\
