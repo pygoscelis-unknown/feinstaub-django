@@ -81,9 +81,21 @@ python manage.py get_csv_header --date <YYYY-MM-DD>
 ```
 This script generates `./sensor_csv_header.json`.
 
-### Generate base files for your app
+### Get list of sensor types with monthly zip (optional)
+If you want to generate base files only for sensor types with monthly zip, first get a list of such sensor types. This file is needed in the next step.
 ```bash
-python manage.py generate_base_files --json ./sensor_csv_header.json
+python manage.py get_zip_sensor_types
+```
+This script generates `./zip_filenames.json` and `./sensor_types-zip.json`.
+
+### Generate base files for your app
+To generate base files for all sensor types, execute
+```bash
+python manage.py generate_base_files
+```
+To generate base files only for sensor types with a monthly zip, execute
+```bash
+python manage.py generate_base_files -z
 ```
 This script generates the following files:
 - models.py
