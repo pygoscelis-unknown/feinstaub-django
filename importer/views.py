@@ -1,11 +1,11 @@
 #pylint: skip-file
 from rest_framework import viewsets
-from .models import bme280, bmp180, bmp280, dht22, ds18b20, hpm, htu21d, pms1003, pms3003, pms5003, pms6003, pms7003, ppd42ns, sds011
-from .serializers import Bme280Serializer, Bmp180Serializer, Bmp280Serializer, Dht22Serializer, Ds18b20Serializer, HpmSerializer, Htu21dSerializer, Pms1003Serializer, Pms3003Serializer, Pms5003Serializer, Pms6003Serializer, Pms7003Serializer, Ppd42nsSerializer, Sds011Serializer
-class Bme280ViewSet(viewsets.ModelViewSet):
-    serializer_class = Bme280Serializer
+from .models import BME280, BMP180, BMP280, DHT22, DS18B20, HPM, HTU21D, PMS1003, PMS3003, PMS5003, PMS6003, PMS7003, PPD42NS, SDS011
+from .serializers import BME280Serializer, BMP180Serializer, BMP280Serializer, DHT22Serializer, DS18B20Serializer, HPMSerializer, HTU21DSerializer, PMS1003Serializer, PMS3003Serializer, PMS5003Serializer, PMS6003Serializer, PMS7003Serializer, PPD42NSSerializer, SDS011Serializer
+class BME280ViewSet(viewsets.ModelViewSet):
+    serializer_class = BME280Serializer
     def get_queryset(self):
-        queryset = bme280.objects.all()
+        queryset = BME280.objects.all()
         queried_sensor_id = self.request.query_params.get("sensor_id")
         if queried_sensor_id is not None:
             queryset = queryset.filter(sensor_id=queried_sensor_id)
@@ -31,10 +31,10 @@ class Bme280ViewSet(viewsets.ModelViewSet):
         if queried_hour is not None:
             queryset = queryset.filter(timestamp__hour=queried_hour)
         return queryset
-class Bmp180ViewSet(viewsets.ModelViewSet):
-    serializer_class = Bmp180Serializer
+class BMP180ViewSet(viewsets.ModelViewSet):
+    serializer_class = BMP180Serializer
     def get_queryset(self):
-        queryset = bmp180.objects.all()
+        queryset = BMP180.objects.all()
         queried_sensor_id = self.request.query_params.get("sensor_id")
         if queried_sensor_id is not None:
             queryset = queryset.filter(sensor_id=queried_sensor_id)
@@ -60,10 +60,10 @@ class Bmp180ViewSet(viewsets.ModelViewSet):
         if queried_hour is not None:
             queryset = queryset.filter(timestamp__hour=queried_hour)
         return queryset
-class Bmp280ViewSet(viewsets.ModelViewSet):
-    serializer_class = Bmp280Serializer
+class BMP280ViewSet(viewsets.ModelViewSet):
+    serializer_class = BMP280Serializer
     def get_queryset(self):
-        queryset = bmp280.objects.all()
+        queryset = BMP280.objects.all()
         queried_sensor_id = self.request.query_params.get("sensor_id")
         if queried_sensor_id is not None:
             queryset = queryset.filter(sensor_id=queried_sensor_id)
@@ -89,10 +89,10 @@ class Bmp280ViewSet(viewsets.ModelViewSet):
         if queried_hour is not None:
             queryset = queryset.filter(timestamp__hour=queried_hour)
         return queryset
-class Dht22ViewSet(viewsets.ModelViewSet):
-    serializer_class = Dht22Serializer
+class DHT22ViewSet(viewsets.ModelViewSet):
+    serializer_class = DHT22Serializer
     def get_queryset(self):
-        queryset = dht22.objects.all()
+        queryset = DHT22.objects.all()
         queried_sensor_id = self.request.query_params.get("sensor_id")
         if queried_sensor_id is not None:
             queryset = queryset.filter(sensor_id=queried_sensor_id)
@@ -118,10 +118,10 @@ class Dht22ViewSet(viewsets.ModelViewSet):
         if queried_hour is not None:
             queryset = queryset.filter(timestamp__hour=queried_hour)
         return queryset
-class Ds18b20ViewSet(viewsets.ModelViewSet):
-    serializer_class = Ds18b20Serializer
+class DS18B20ViewSet(viewsets.ModelViewSet):
+    serializer_class = DS18B20Serializer
     def get_queryset(self):
-        queryset = ds18b20.objects.all()
+        queryset = DS18B20.objects.all()
         queried_sensor_id = self.request.query_params.get("sensor_id")
         if queried_sensor_id is not None:
             queryset = queryset.filter(sensor_id=queried_sensor_id)
@@ -147,10 +147,10 @@ class Ds18b20ViewSet(viewsets.ModelViewSet):
         if queried_hour is not None:
             queryset = queryset.filter(timestamp__hour=queried_hour)
         return queryset
-class HpmViewSet(viewsets.ModelViewSet):
-    serializer_class = HpmSerializer
+class HPMViewSet(viewsets.ModelViewSet):
+    serializer_class = HPMSerializer
     def get_queryset(self):
-        queryset = hpm.objects.all()
+        queryset = HPM.objects.all()
         queried_sensor_id = self.request.query_params.get("sensor_id")
         if queried_sensor_id is not None:
             queryset = queryset.filter(sensor_id=queried_sensor_id)
@@ -176,10 +176,10 @@ class HpmViewSet(viewsets.ModelViewSet):
         if queried_hour is not None:
             queryset = queryset.filter(timestamp__hour=queried_hour)
         return queryset
-class Htu21dViewSet(viewsets.ModelViewSet):
-    serializer_class = Htu21dSerializer
+class HTU21DViewSet(viewsets.ModelViewSet):
+    serializer_class = HTU21DSerializer
     def get_queryset(self):
-        queryset = htu21d.objects.all()
+        queryset = HTU21D.objects.all()
         queried_sensor_id = self.request.query_params.get("sensor_id")
         if queried_sensor_id is not None:
             queryset = queryset.filter(sensor_id=queried_sensor_id)
@@ -205,10 +205,10 @@ class Htu21dViewSet(viewsets.ModelViewSet):
         if queried_hour is not None:
             queryset = queryset.filter(timestamp__hour=queried_hour)
         return queryset
-class Pms1003ViewSet(viewsets.ModelViewSet):
-    serializer_class = Pms1003Serializer
+class PMS1003ViewSet(viewsets.ModelViewSet):
+    serializer_class = PMS1003Serializer
     def get_queryset(self):
-        queryset = pms1003.objects.all()
+        queryset = PMS1003.objects.all()
         queried_sensor_id = self.request.query_params.get("sensor_id")
         if queried_sensor_id is not None:
             queryset = queryset.filter(sensor_id=queried_sensor_id)
@@ -234,10 +234,10 @@ class Pms1003ViewSet(viewsets.ModelViewSet):
         if queried_hour is not None:
             queryset = queryset.filter(timestamp__hour=queried_hour)
         return queryset
-class Pms3003ViewSet(viewsets.ModelViewSet):
-    serializer_class = Pms3003Serializer
+class PMS3003ViewSet(viewsets.ModelViewSet):
+    serializer_class = PMS3003Serializer
     def get_queryset(self):
-        queryset = pms3003.objects.all()
+        queryset = PMS3003.objects.all()
         queried_sensor_id = self.request.query_params.get("sensor_id")
         if queried_sensor_id is not None:
             queryset = queryset.filter(sensor_id=queried_sensor_id)
@@ -263,10 +263,10 @@ class Pms3003ViewSet(viewsets.ModelViewSet):
         if queried_hour is not None:
             queryset = queryset.filter(timestamp__hour=queried_hour)
         return queryset
-class Pms5003ViewSet(viewsets.ModelViewSet):
-    serializer_class = Pms5003Serializer
+class PMS5003ViewSet(viewsets.ModelViewSet):
+    serializer_class = PMS5003Serializer
     def get_queryset(self):
-        queryset = pms5003.objects.all()
+        queryset = PMS5003.objects.all()
         queried_sensor_id = self.request.query_params.get("sensor_id")
         if queried_sensor_id is not None:
             queryset = queryset.filter(sensor_id=queried_sensor_id)
@@ -292,10 +292,10 @@ class Pms5003ViewSet(viewsets.ModelViewSet):
         if queried_hour is not None:
             queryset = queryset.filter(timestamp__hour=queried_hour)
         return queryset
-class Pms6003ViewSet(viewsets.ModelViewSet):
-    serializer_class = Pms6003Serializer
+class PMS6003ViewSet(viewsets.ModelViewSet):
+    serializer_class = PMS6003Serializer
     def get_queryset(self):
-        queryset = pms6003.objects.all()
+        queryset = PMS6003.objects.all()
         queried_sensor_id = self.request.query_params.get("sensor_id")
         if queried_sensor_id is not None:
             queryset = queryset.filter(sensor_id=queried_sensor_id)
@@ -321,10 +321,10 @@ class Pms6003ViewSet(viewsets.ModelViewSet):
         if queried_hour is not None:
             queryset = queryset.filter(timestamp__hour=queried_hour)
         return queryset
-class Pms7003ViewSet(viewsets.ModelViewSet):
-    serializer_class = Pms7003Serializer
+class PMS7003ViewSet(viewsets.ModelViewSet):
+    serializer_class = PMS7003Serializer
     def get_queryset(self):
-        queryset = pms7003.objects.all()
+        queryset = PMS7003.objects.all()
         queried_sensor_id = self.request.query_params.get("sensor_id")
         if queried_sensor_id is not None:
             queryset = queryset.filter(sensor_id=queried_sensor_id)
@@ -350,10 +350,10 @@ class Pms7003ViewSet(viewsets.ModelViewSet):
         if queried_hour is not None:
             queryset = queryset.filter(timestamp__hour=queried_hour)
         return queryset
-class Ppd42nsViewSet(viewsets.ModelViewSet):
-    serializer_class = Ppd42nsSerializer
+class PPD42NSViewSet(viewsets.ModelViewSet):
+    serializer_class = PPD42NSSerializer
     def get_queryset(self):
-        queryset = ppd42ns.objects.all()
+        queryset = PPD42NS.objects.all()
         queried_sensor_id = self.request.query_params.get("sensor_id")
         if queried_sensor_id is not None:
             queryset = queryset.filter(sensor_id=queried_sensor_id)
@@ -379,10 +379,10 @@ class Ppd42nsViewSet(viewsets.ModelViewSet):
         if queried_hour is not None:
             queryset = queryset.filter(timestamp__hour=queried_hour)
         return queryset
-class Sds011ViewSet(viewsets.ModelViewSet):
-    serializer_class = Sds011Serializer
+class SDS011ViewSet(viewsets.ModelViewSet):
+    serializer_class = SDS011Serializer
     def get_queryset(self):
-        queryset = sds011.objects.all()
+        queryset = SDS011.objects.all()
         queried_sensor_id = self.request.query_params.get("sensor_id")
         if queried_sensor_id is not None:
             queryset = queryset.filter(sensor_id=queried_sensor_id)
