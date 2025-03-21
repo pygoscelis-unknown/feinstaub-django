@@ -31,6 +31,8 @@ class BME280ViewSet(viewsets.ModelViewSet):
         if queried_hour is not None:
             queryset = queryset.filter(timestamp__hour=queried_hour)
         return queryset
+    def get_view_name(self):
+        return "BME280 List"
 class BMP180ViewSet(viewsets.ModelViewSet):
     serializer_class = BMP180Serializer
     def get_queryset(self):
@@ -60,6 +62,8 @@ class BMP180ViewSet(viewsets.ModelViewSet):
         if queried_hour is not None:
             queryset = queryset.filter(timestamp__hour=queried_hour)
         return queryset
+    def get_view_name(self):
+        return "BMP180 List"
 class BMP280ViewSet(viewsets.ModelViewSet):
     serializer_class = BMP280Serializer
     def get_queryset(self):
@@ -89,6 +93,8 @@ class BMP280ViewSet(viewsets.ModelViewSet):
         if queried_hour is not None:
             queryset = queryset.filter(timestamp__hour=queried_hour)
         return queryset
+    def get_view_name(self):
+        return "BMP280 List"
 class DHT22ViewSet(viewsets.ModelViewSet):
     serializer_class = DHT22Serializer
     def get_queryset(self):
@@ -118,6 +124,8 @@ class DHT22ViewSet(viewsets.ModelViewSet):
         if queried_hour is not None:
             queryset = queryset.filter(timestamp__hour=queried_hour)
         return queryset
+    def get_view_name(self):
+        return "DHT22 List"
 class DS18B20ViewSet(viewsets.ModelViewSet):
     serializer_class = DS18B20Serializer
     def get_queryset(self):
@@ -147,6 +155,8 @@ class DS18B20ViewSet(viewsets.ModelViewSet):
         if queried_hour is not None:
             queryset = queryset.filter(timestamp__hour=queried_hour)
         return queryset
+    def get_view_name(self):
+        return "DS18B20 List"
 class HPMViewSet(viewsets.ModelViewSet):
     serializer_class = HPMSerializer
     def get_queryset(self):
@@ -176,6 +186,8 @@ class HPMViewSet(viewsets.ModelViewSet):
         if queried_hour is not None:
             queryset = queryset.filter(timestamp__hour=queried_hour)
         return queryset
+    def get_view_name(self):
+        return "HPM List"
 class HTU21DViewSet(viewsets.ModelViewSet):
     serializer_class = HTU21DSerializer
     def get_queryset(self):
@@ -205,6 +217,8 @@ class HTU21DViewSet(viewsets.ModelViewSet):
         if queried_hour is not None:
             queryset = queryset.filter(timestamp__hour=queried_hour)
         return queryset
+    def get_view_name(self):
+        return "HTU21D List"
 class PMS1003ViewSet(viewsets.ModelViewSet):
     serializer_class = PMS1003Serializer
     def get_queryset(self):
@@ -234,6 +248,8 @@ class PMS1003ViewSet(viewsets.ModelViewSet):
         if queried_hour is not None:
             queryset = queryset.filter(timestamp__hour=queried_hour)
         return queryset
+    def get_view_name(self):
+        return "PMS1003 List"
 class PMS3003ViewSet(viewsets.ModelViewSet):
     serializer_class = PMS3003Serializer
     def get_queryset(self):
@@ -263,6 +279,8 @@ class PMS3003ViewSet(viewsets.ModelViewSet):
         if queried_hour is not None:
             queryset = queryset.filter(timestamp__hour=queried_hour)
         return queryset
+    def get_view_name(self):
+        return "PMS3003 List"
 class PMS5003ViewSet(viewsets.ModelViewSet):
     serializer_class = PMS5003Serializer
     def get_queryset(self):
@@ -292,6 +310,8 @@ class PMS5003ViewSet(viewsets.ModelViewSet):
         if queried_hour is not None:
             queryset = queryset.filter(timestamp__hour=queried_hour)
         return queryset
+    def get_view_name(self):
+        return "PMS5003 List"
 class PMS6003ViewSet(viewsets.ModelViewSet):
     serializer_class = PMS6003Serializer
     def get_queryset(self):
@@ -321,6 +341,8 @@ class PMS6003ViewSet(viewsets.ModelViewSet):
         if queried_hour is not None:
             queryset = queryset.filter(timestamp__hour=queried_hour)
         return queryset
+    def get_view_name(self):
+        return "PMS6003 List"
 class PMS7003ViewSet(viewsets.ModelViewSet):
     serializer_class = PMS7003Serializer
     def get_queryset(self):
@@ -350,6 +372,8 @@ class PMS7003ViewSet(viewsets.ModelViewSet):
         if queried_hour is not None:
             queryset = queryset.filter(timestamp__hour=queried_hour)
         return queryset
+    def get_view_name(self):
+        return "PMS7003 List"
 class PPD42NSViewSet(viewsets.ModelViewSet):
     serializer_class = PPD42NSSerializer
     def get_queryset(self):
@@ -379,6 +403,8 @@ class PPD42NSViewSet(viewsets.ModelViewSet):
         if queried_hour is not None:
             queryset = queryset.filter(timestamp__hour=queried_hour)
         return queryset
+    def get_view_name(self):
+        return "PPD42NS List"
 class SDS011ViewSet(viewsets.ModelViewSet):
     serializer_class = SDS011Serializer
     def get_queryset(self):
@@ -408,3 +434,5 @@ class SDS011ViewSet(viewsets.ModelViewSet):
         if queried_hour is not None:
             queryset = queryset.filter(timestamp__hour=queried_hour)
         return queryset
+    def get_view_name(self):
+        return "SDS011 List"

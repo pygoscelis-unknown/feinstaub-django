@@ -292,6 +292,8 @@ class Command(BaseCommand):
                             if queried_hour is not None:
                                 queryset = queryset.filter(timestamp__hour=queried_hour)
                             return queryset
+                        def get_view_name(self):
+                            return "{key.upper()} List"
                 """))
 
             # --- APP_URLS.PY --- #
