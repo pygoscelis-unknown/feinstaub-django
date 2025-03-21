@@ -45,7 +45,7 @@ class Command(BaseCommand):
             + "/"
             + date
             + "_"
-            + sensor_type
+            + sensor_type.lower()
             + ".zip"
         )
         file_name = date + "_" + sensor_type
@@ -71,7 +71,7 @@ class Command(BaseCommand):
                 rows = list(chunk)
 
                 if header:
-                    create_objects(sensor_type, header, rows)
+                    create_objects(sensor_type.lower(), header, rows)
                 else:
                     raise ValueError("Header is missing.")
 

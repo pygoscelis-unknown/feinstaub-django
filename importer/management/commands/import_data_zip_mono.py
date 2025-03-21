@@ -46,7 +46,7 @@ class Command(BaseCommand):
             + "/"
             + date
             + "_"
-            + sensor_type
+            + sensor_type.lower()
             + ".zip"
         )
         file_name = date + "_" + sensor_type
@@ -75,7 +75,7 @@ class Command(BaseCommand):
 
                 else:
                     new_row = convert_values(header, row)
-                    create(sensor_type, new_row)
+                    create(sensor_type.lower(), new_row)
 
                     object_count += 1
                     print(str(object_count) + ". object created.", end="\r")

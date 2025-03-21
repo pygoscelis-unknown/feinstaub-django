@@ -57,7 +57,7 @@ class Command(BaseCommand):
                     continue
 
                 sensor_type = sensor_type.replace("-", "")
-                if sensor_type is not None and inserted_sensor_type == sensor_type:
+                if sensor_type is not None and inserted_sensor_type.lower() == sensor_type:
                     url = f"{base_url}/{i['href']}"
                     print("Importing from:", url)
 

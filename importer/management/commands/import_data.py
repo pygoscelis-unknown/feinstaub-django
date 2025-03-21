@@ -27,7 +27,7 @@ def import_monthly_data(date, sensor_type):
     Import monthly data from given date and sensor type.
     """
     base_url = get_sensor_archive_url()
-    url = base_url + "/csv_per_month/" + date + "/" + date + "_" + sensor_type + ".zip"
+    url = base_url + "/csv_per_month/" + date + "/" + date + "_" + sensor_type.lower() + ".zip"
 
     file_name = date + "_" + sensor_type
     print("Downloading zip ...")
@@ -49,7 +49,7 @@ def import_monthly_data(date, sensor_type):
             rows = list(chunk)
 
             if header:
-                create_objects(sensor_type, header, rows)
+                create_objects(sensor_type.lower(), header, rows)
             else:
                 raise ValueError("Header is missing.")
 
