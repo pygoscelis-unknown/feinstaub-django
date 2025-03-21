@@ -136,6 +136,13 @@ class Command(BaseCommand):
                             {value} = models.FloatField(null=True, blank=True)
                         """))
 
+                pyf.write(textwrap.dedent(f"""\
+                    #
+                        class Meta:
+                            verbose_name = "{key}"
+                            verbose_name_plural = "{key}s"
+                """))
+
             # --- IMPORT MODELS --- #
             with open(app_basefiles[1], "a", encoding="utf-8") as pyf:
                 if index == 0:
@@ -198,17 +205,17 @@ class Command(BaseCommand):
             # --- APP_VIEWS.PY --- #
             with open(app_basefiles[3], "a", encoding="utf-8") as pyf:
                 if index == 0:
-                    pyf.write(f"from .serializers import {key.capitalize()}Serializer")
+                    pyf.write(f"from .serializers import {key}Serializer")
                 else:
                     if index == len(data) - 1:
-                        pyf.write(f", {key.capitalize()}Serializer\n")
+                        pyf.write(f", {key}Serializer\n")
                     else:
-                        pyf.write(f", {key.capitalize()}Serializer")
+                        pyf.write(f", {key}Serializer")
 
             # --- APP_SERIALIZERS.PY --- #
             with open(app_basefiles[2], "a", encoding="utf-8") as pyf:
                 pyf.write(textwrap.dedent(f"""\
-                    class {key.capitalize()}Serializer(serializers.HyperlinkedModelSerializer):
+                    class {key}Serializer(serializers.HyperlinkedModelSerializer):
                         class Meta:
                             model = {key}
                             fields = "__all__"
@@ -217,12 +224,12 @@ class Command(BaseCommand):
             # --- APP_URLS.PY --- #
             with open(app_basefiles[4], "a", encoding="utf-8") as pyf:
                 if index == 0:
-                    pyf.write(f"from .views import {key.capitalize()}ViewSet")
+                    pyf.write(f"from .views import {key}ViewSet")
                 else:
                     if index == len(data) - 1:
-                        pyf.write(f", {key.capitalize()}ViewSet\n")
+                        pyf.write(f", {key}ViewSet\n")
                     else:
-                        pyf.write(f", {key.capitalize()}ViewSet")
+                        pyf.write(f", {key}ViewSet")
 
             # --- CREATE_OBJECT.PY --- #
             with open(app_commandfiles[0], "a", encoding="utf-8") as pyf:
@@ -257,8 +264,8 @@ class Command(BaseCommand):
             # --- APP_VIEWS.PY --- #
             with open(app_basefiles[3], "a", encoding="utf-8") as pyf:
                 pyf.write(textwrap.dedent(f"""\
-                    class {key.capitalize()}ViewSet(viewsets.ModelViewSet):
-                        serializer_class = {key.capitalize()}Serializer
+                    class {key}ViewSet(viewsets.ModelViewSet):
+                        serializer_class = {key}Serializer
                         def get_queryset(self):
                             queryset = {key}.objects.all()
                             queried_sensor_id = self.request.query_params.get("sensor_id")
@@ -290,7 +297,7 @@ class Command(BaseCommand):
 
             # --- APP_URLS.PY --- #
             with open(app_basefiles[4], "a", encoding="utf-8") as pyf:
-                pyf.write(f"router.register(r'{key}', {key.capitalize()}ViewSet, basename='{key}')\n")
+                pyf.write(f"router.register(r'{key.lower()}', {key}ViewSet, basename='{key}')\n")
 
         # --- CREATE_OBJECT.PY --- #
         with open(app_commandfiles[0], "a", encoding="utf-8") as pyf:

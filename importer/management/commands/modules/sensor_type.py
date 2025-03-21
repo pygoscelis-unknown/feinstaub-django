@@ -36,6 +36,6 @@ def get_sensor_type(a_href, date, is_zip=False) -> str:
                     sensor_type = tmp[date_index + 1] + "_" + tmp[date_index + 2]
 
     if sensor_type is not None:
-        return sensor_type
+        return sensor_type.upper()
 
     raise ValueError("Cannot get sensor type.")
