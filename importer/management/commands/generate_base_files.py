@@ -266,31 +266,45 @@ class Command(BaseCommand):
                     class {key.upper()}ViewSet(viewsets.ModelViewSet):
                         serializer_class = {key.upper()}Serializer
                         def get_queryset(self):
-                            queryset = {key.upper()}.objects.all()
-                            queried_sensor_id = self.request.query_params.get("sensor_id")
-                            if queried_sensor_id is not None:
-                                queryset = queryset.filter(sensor_id=queried_sensor_id)
-                            queried_location = self.request.query_params.get("location")
-                            if queried_location is not None:
-                                queryset = queryset.filter(location=queried_location)
-                            queried_lat = self.request.query_params.get("lat")
-                            if queried_lat is not None:
-                                queryset = queryset.filter(lat=queried_lat)
-                            queried_lon = self.request.query_params.get("lon")
-                            if queried_lon is not None:
-                                queryset = queryset.filter(lon=queried_lon)
-                            queried_year = self.request.query_params.get("year")
-                            if queried_year is not None:
-                                queryset = queryset.filter(timestamp__year=queried_year)
-                            queried_month = self.request.query_params.get("month")
-                            if queried_month is not None:
-                                queryset = queryset.filter(timestamp__month=queried_month)
-                            queried_day = self.request.query_params.get("day")
-                            if queried_day is not None:
-                                queryset = queryset.filter(timestamp__day=queried_day)
-                            queried_hour = self.request.query_params.get("hour")
-                            if queried_hour is not None:
-                                queryset = queryset.filter(timestamp__hour=queried_hour)
+                            queryset = {key.upper()}.objects
+                            query_params = self.request.query_params
+                            available_params = [
+                                "sensor_id",
+                                "location",
+                                "lat",
+                                "lon",
+                                "year",
+                                "month",
+                                "day",
+                                "hour",
+                            ]
+                            intersected_params = list(filter(lambda x: x in query_params, available_params))
+                            no_params_or_no_values = True
+                            if (len(intersected_params) != 0):
+                                for pkey in intersected_params:
+                                    pvalue = query_params.get(pkey)
+                                    if pvalue != "":
+                                        no_params_or_no_values = False
+                                        if pkey == "sensor_id":
+                                            queryset = queryset.filter(sensor_id=pvalue)
+                                        if pkey == "location":
+                                            queryset = queryset.filter(location=pvalue)
+                                        if pkey == "lat":
+                                            queryset = queryset.filter(lat=pvalue)
+                                        if pkey == "lon":
+                                            queryset = queryset.filter(lon=pvalue)
+                                        if pkey == "year":
+                                            queryset = queryset.filter(timestamp__year=pvalue)
+                                        if pkey == "month":
+                                            queryset = queryset.filter(timestamp__month=pvalue)
+                                        if pkey == "day":
+                                            queryset = queryset.filter(timestamp__day=pvalue)
+                                        if pkey == "hour":
+                                            queryset = queryset.filter(timestamp__hour=pvalue)
+                            if no_params_or_no_values:
+                                queryset = queryset.all()
+                            if query_params.get('sorted') == "1":
+                                queryset = queryset.order_by('timestamp')
                             return queryset
                         def get_view_name(self):
                             return "{key.upper()} List"
